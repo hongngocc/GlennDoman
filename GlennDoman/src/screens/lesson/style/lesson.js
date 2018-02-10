@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
     rowContent: {
         width: '100%',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingHorizontal: config.paddingSize
     },
     rightContent: {
         flex: 1,
