@@ -16,7 +16,7 @@ import Modal from 'react-native-modal';
 import Swipeout from 'react-native-swipeout';
 import { Card } from 'native-base';
 import globalStyle from '../../globalStyle';
-import RealmManager from '../../realm/realm';
+import * as RealmManager from '../../realm/realm';
 
 const actions = [{
     text: 'Add Topic',
@@ -41,12 +41,12 @@ export default class Topic extends Component {
     }
 
     componentWillMount() {
+        this.loadData()
+    }
+
+    loadData() {
         let topics = RealmManager.getAllTopic();
-        topics.then(data => {
-            this.setState({
-                listTopic: data
-            })
-        })
+        console.log(topics)
     }
 
     onPressFab(name) {
@@ -68,13 +68,18 @@ export default class Topic extends Component {
     }
 
     addNewTopic() {
-        let _listTopic = this.state.listTopic;
-        if (this.state.newTopic.length > 0) {
-            _listTopic.push(this.state.newTopic)
-        }
-        this.setState({
-            listTopic: _listTopic
+        let topicObj = {};
+        topicObj.title = this.state.newTopic;
+        topicObj.time = new Date().getTime().toString();
+        console.log('OBJ:', topicObj)
+        RealmManager.createTopic(topicObj)
+        let topics = RealmManager.getAllTopic();
+        topics.then(data => {
+            this.setState({
+                listTopic: data
+            })
         })
+        this.toggleModal()
     }
 
     renderTopic(element) {
@@ -85,7 +90,7 @@ export default class Topic extends Component {
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
                             <Text style={globalStyle.textMain}>{element.title}</Text>
                         </View>
-                        <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require(element.icon)} />
+                        <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require('../../img/animal.png')} />
                     </Card>
                 </View>
             </View>
@@ -104,9 +109,11 @@ export default class Topic extends Component {
                             <Text style={{ width: '20%' }}>Title: </Text>
                             <TextInput style={{ width: 200 }} placeholder='Input Topic Title'
                                 underlineColorAndroid='transparent'
+                                onChangeText={(text) => this.setState({
+                                    newTopic: text
+                                })}
                             ></TextInput>
                         </View>
-                        <Text>Tag: </Text>
                         <Text>Icon: </Text>
                         <View style={{ marginTop: 10, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: 'black', opacity: 0.2 }}></View>
                     </View>
@@ -124,7 +131,6 @@ export default class Topic extends Component {
         )
     }
     render() {
-        console.log(this.state.listTopic)
         return (
             <View style={{ flex: 1, padding: 16 }}>
                 <FlatList data={this.state.listTopic} renderItem={({ item }) => this.renderTopic(item)}

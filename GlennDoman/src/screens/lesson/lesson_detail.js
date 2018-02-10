@@ -6,7 +6,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import config from '../../config';
 import globalStyle from '../../globalStyle';
 import { FloatingAction } from 'react-native-floating-action';
-import Speech from 'react-native-speech';
 
 export default class LessonDetail extends Component {
     constructor(props) {
