@@ -41,11 +41,29 @@ export default class Topic extends Component {
     }
 
     componentWillMount() {
-        let topics = RealmManager.getAllTopic();
+        this.loadData()
+    }
+
+    loadData() {
+        let topics = RealmManager.getAllTopic(this.reloadData.bind(this));
         topics.then(data => {
             this.setState({
                 listTopic: data
             })
+        })
+    }
+
+    reloadData(realm) {
+        realm.objects('Topic');
+        let topicRealm = realm.objects('Topic');
+        let topics = []
+        topicRealm.forEach(value => {
+            let valueS = JSON.stringify(value);
+            let valueJSOn = JSON.parse(valueS);
+            topics.push(valueJSOn)
+        })
+        this.setState({
+            listTopic: topics
         })
     }
 
@@ -68,18 +86,34 @@ export default class Topic extends Component {
     }
 
     addNewTopic() {
-        let _listTopic = this.state.listTopic;
-        if (this.state.newTopic.length > 0) {
-            _listTopic.push(this.state.newTopic)
-        }
-        this.setState({
-            listTopic: _listTopic
+        this.toggleModal()
+        let topicObj = {};
+        topicObj.icon = '';
+        topicObj.words = [];
+        topicObj.title = this.state.newTopic;
+        topicObj.time = new Date().getTime().toString();
+        RealmManager.createTopic(topicObj);
+        // let topics = RealmManager.getAllTopic();
+        // topics.then(data => {
+        //     this.setState({
+        //         listTopic: data
+        //     })
+        // })
+    }
+
+    showDetails(element) {
+        this.props.navigator.push({
+            screen: {
+                screen: 'kids.TopicDetails'
+            },
+            passProps: {element}
         })
     }
 
     renderTopic(element) {
         return (
-            <View style={{ flex: 1 }}>
+            <TouchableOpacity onPress={() => this.showDetails(element)}
+            style={{ flex: 1 }}>
                 <View style={styles.topic}>
                     <Card style={{ padding: 16 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
@@ -88,7 +122,7 @@ export default class Topic extends Component {
                         <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require('../../img/animal.png')} />
                     </Card>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -104,9 +138,11 @@ export default class Topic extends Component {
                             <Text style={{ width: '20%' }}>Title: </Text>
                             <TextInput style={{ width: 200 }} placeholder='Input Topic Title'
                                 underlineColorAndroid='transparent'
+                                onChangeText={(text) => this.setState({
+                                    newTopic: text
+                                })}
                             ></TextInput>
                         </View>
-                        <Text>Tag: </Text>
                         <Text>Icon: </Text>
                         <View style={{ marginTop: 10, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: 'black', opacity: 0.2 }}></View>
                     </View>

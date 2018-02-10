@@ -8,6 +8,7 @@ import styles from './style/lesson';
 import { FloatingAction } from 'react-native-floating-action';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import { iconsMap } from '../../utils/appIcon';
 
 const { width, hight } = Dimensions.get('window');
 
@@ -77,8 +78,24 @@ export default class Lesson extends Component {
         console.log('deleted');
     }
 
-    editUnit() {
-        console.log('edited');
+    editUnit(rowData) {
+        this.props.navigator.push({
+            screen: 'kids.EditLesson',
+            title: 'Edit Lesson',
+            navigatorStyle: globalStyle.navigatorStyle,
+            navigatorButtons: {
+                rightButtons: [
+                    {
+                        title: 'Done',
+                        id: 'edit_lesson_done',
+                        icon: iconsMap['md-checkmark']
+                    }
+                ]
+            },
+            passProps: {
+                lesson: rowData
+            }
+        })
     }
 
     showUnitDetail(listWord) {
@@ -97,12 +114,12 @@ export default class Lesson extends Component {
             {
                 text: 'Edit',
                 backgroundColor: config.color.lightBlue,
-                onPress: () => { this.deleteUnit(this.props.rowData) }
+                onPress: () => { this.editUnit(rowData) }
             },
             {
                 text: 'Delete',
                 backgroundColor: config.color.red,
-                onPress: () => { this.editUnit(this.props.rowData) }
+                onPress: () => { this.deleteUnit(rowData) }
             }
         ];
         let words = '';

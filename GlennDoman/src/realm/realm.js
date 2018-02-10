@@ -2,10 +2,12 @@ import Realm from 'realm';
 
 import * as schema from './schema/schema';
 
+const ref = Realm.open({
+    schema: [schema.topicSchema]
+});
+
 export default RealmManager = {
-    getAllTopic: () => Realm.open({
-        schema: [schema.topicSchema]
-    }).then(realm => {
+    getAllTopic: (callback) => ref.then(realm => {
         let topicRealm = realm.objects('Topic');
         let topics = []
         console.log(topicRealm.length)
@@ -14,7 +16,19 @@ export default RealmManager = {
             let valueJSOn = JSON.parse(valueS);
             topics.push(valueJSOn)
         })
-        console.log("123", topics)
+        realm.addListener('change', callback)
         return topics;
-    })
+    }),
+    createTopic: function (topicObj) {
+        ref.then(realm => {
+            realm.write(() => {
+            realm.create('Topic', topicObj)
+            })
+        })
+    },
+    updateTopic: function(topicObj) {
+        ref.then(realm => {
+            realm.create('Topic', topicObj, true);
+        })
+    }
 }
