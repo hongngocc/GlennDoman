@@ -16,41 +16,7 @@ import Modal from 'react-native-modal';
 import Swipeout from 'react-native-swipeout';
 import { Card } from 'native-base';
 import globalStyle from '../../globalStyle';
-
-const listDataFaker = [
-    {
-        icon: require('../../img/family.png'),
-        title: 'Family',
-        words: [
-            'Daddy', 'Mommy', 'Kitty'
-        ],
-        time: new Date().getTime()
-    },
-    {
-        icon: require('../../img/animal.png'),
-        title: 'Animal',
-        words: [
-            'Lion', 'Chicken', 'Cat'
-        ],
-        time: new Date().getTime()
-    },
-    {
-        icon: require('../../img/vehicle.png'),
-        title: 'Vehicle',
-        words: [
-            'Car', 'Train', 'Bicycle'
-        ],
-        time: new Date().getTime()
-    },
-    {
-        icon: require('../../img/fruit.png'),
-        title: 'Fruit',
-        words: [
-            'Apple', 'Banana', 'Lemon, Pear, Bean, Tomato, Water Lemon, strawberry, coconut, cucumber'
-        ],
-        time: new Date().getTime()
-    }
-]
+import RealmManager from '../../realm/realm';
 
 const actions = [{
     text: 'Add Topic',
@@ -70,10 +36,19 @@ export default class Topic extends Component {
         this.state = {
             visibleModal: false,
             newTopic: '',
-            listTopic: ['Animal', 'Family'],
-            listWordS: []
+            listTopic: []
         }
     }
+
+    componentWillMount() {
+        let topics = RealmManager.getAllTopic();
+        topics.then(data => {
+            this.setState({
+                listTopic: data
+            })
+        })
+    }
+
     onPressFab(name) {
         switch (name) {
             case 'bt_add_topic':
@@ -110,7 +85,7 @@ export default class Topic extends Component {
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
                             <Text style={globalStyle.textMain}>{element.title}</Text>
                         </View>
-                        <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={element.icon} />
+                        <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require(element.icon)} />
                     </Card>
                 </View>
             </View>
@@ -149,10 +124,11 @@ export default class Topic extends Component {
         )
     }
     render() {
+        console.log(this.state.listTopic)
         return (
             <View style={{ flex: 1, padding: 16 }}>
-                <FlatList data={listDataFaker} renderItem={({item}) => this.renderTopic(item)}
-                numColumns={2} style={{ marginTop: 56 }}>
+                <FlatList data={this.state.listTopic} renderItem={({ item }) => this.renderTopic(item)}
+                    numColumns={2} style={{ marginTop: 56 }}>
                 </FlatList>
                 <FloatingAction showBackground={false}
                     actions={actions}
