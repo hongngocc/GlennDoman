@@ -6,7 +6,14 @@ export default {
     textMain: {
         opacity: font.opacity1,
         fontFamily: font.fontFamily,
-        fontSize: font.fontSizeM,
+        fontSize: font.fontSizeL,
+        color: font.fontColor
+    },
+    textMainMedium: {
+        opacity: font.opacity1,
+        fontFamily: font.fontMedium,
+        fontSize: font.fontSizeXL,
+        fontWeight: '500',
         color: font.fontColor
     },
     navigatorStyle: {

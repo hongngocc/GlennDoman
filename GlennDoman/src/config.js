@@ -1,5 +1,7 @@
 import font from './font/font';
 
+const paddingSizeStandard = 16;
+
 module.exports = {
     color: {
         mainColor: '#673AB7',
@@ -17,5 +19,6 @@ module.exports = {
         navBar: '#673AB7',
         tabBar: '#FFFFFF',
         navButton: '#FFFFFF'
-    }
+    },
+    paddingSize: paddingSizeStandard
 }
