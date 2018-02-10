@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ToastAndroid } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import styles from './style/lesson.detail';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import config from '../../config';
 import globalStyle from '../../globalStyle';
 import { FloatingAction } from 'react-native-floating-action';
-import Tts from 'react-native-tts';
 
 export default class LessonDetail extends Component {
     constructor(props) {
@@ -61,16 +60,6 @@ export default class LessonDetail extends Component {
     }
 
     playVoice() {
-        Speech.speak({
-            text: 'Aujourd\'hui, Maman est morte. Ou peut-être hier, je ne sais pas.',
-            voice: 'fr-FR'
-        })
-            .then(started => {
-                console.log('Speech started');
-            })
-            .catch(error => {
-                console.log('You\'ve already started a speech instance.');
-            });
     }
 
     onSwiped(cardIndex) {
