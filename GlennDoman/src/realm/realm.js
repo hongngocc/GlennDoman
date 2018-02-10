@@ -7,7 +7,7 @@ export default RealmManager = {
         Realm.open({
             schema: [schema.topicSchema, schema.wordSchema]
           }).then(realm => {
-                console.log(realm)
+                realm.write()
           })
     }
 }
