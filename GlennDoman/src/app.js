@@ -23,15 +23,29 @@ export default class App extends Component {
         Navigation.startTabBasedApp({
             tabs: [
                 {
-                    label: 'One',
-                    screen: 'example.FirstTabScreen', // this is a registered name for a screen
+                    label: 'Lesson',
+                    screen: 'kids.Lesson', // this is a registered name for a screen
                     icon: iconsMap['ios-film'],
                     //   selectedIcon: require('../img/one_selected.png'), // iOS only
                     title: 'Screen One'
                 },
                 {
-                    label: 'Two',
-                    screen: 'example.SecondTabScreen',
+                    label: 'History',
+                    screen: 'kids.History',
+                    icon: iconsMap['ios-film'],
+                    //   selectedIcon: require('../img/two_selected.png'), // iOS only
+                    title: 'Screen Two'
+                },
+                {
+                    label: 'Topic',
+                    screen: 'kids.Topic',
+                    icon: iconsMap['ios-film'],
+                    //   selectedIcon: require('../img/two_selected.png'), // iOS only
+                    title: 'Screen Two'
+                },
+                {
+                    label: 'Setting',
+                    screen: 'kids.Settings',
                     icon: iconsMap['ios-film'],
                     //   selectedIcon: require('../img/two_selected.png'), // iOS only
                     title: 'Screen Two'
