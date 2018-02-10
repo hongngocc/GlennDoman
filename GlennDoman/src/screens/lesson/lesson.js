@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { View, Text, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import globalStyle from '../../globalStyle';
@@ -71,6 +72,15 @@ export default class Lesson extends Component {
         );
     }
 
+=======
+import { View, Text } from 'react-native';
+import Realm from 'realm';
+
+export default class Lesson extends Component {
+    componentDidMount() {
+        
+    }
+>>>>>>> 073e8ee0921d07322bb658856ceedfcded66b92d
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
