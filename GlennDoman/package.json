@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "restart": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json && yarn restart",
     "test": "jest"
   },
   "dependencies": {
     "react": "16.2.0",
     "react-native": "0.53.0",
     "react-native-navigation": "^1.1.375",
-    "react-native-vector-icons": "^4.5.0"
+    "react-native-vector-icons": "^4.5.0",
+    "realm": "^2.2.7"
   },
   "devDependencies": {
     "babel-jest": "22.2.2",
