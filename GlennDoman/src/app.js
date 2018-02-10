@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
 import { iconsMap, iconsLoaded } from './utils/appIcon';
 import { Navigation } from 'react-native-navigation';
 import { registerScreens } from './screens';
+import configureStore from './store/configureStore';
+import { Provider, connect } from 'react-redux';
 
-registerScreens(); // this is where you register all of your app's screens
+const store = configureStore();
+registerScreens(store, Provider);
 
 export default class App extends Component {
     constructor(props) {
