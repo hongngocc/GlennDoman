@@ -8,7 +8,7 @@ import config from '../../config';
 export default class LessonDetail extends Component {
     constructor(props) {
         super(props);
-        this.len = this.props.listWord ? this.props.listWord.length - 1 : 0;
+        // this.len = this.props.listWord ? this.props.listWord.length - 1 : 0;
         this.state = {
             curIndex: 0
         };
@@ -23,23 +23,37 @@ export default class LessonDetail extends Component {
     }
 
     swipeLeft() {
-        if (this.state.curIndex > 0) {
-            setTimeout(() => {
-                this.refs && this.refs.swiper && this.refs.swiper.jumpToCardIndex(this.state.curIndex - 1);
-            }, 500)
-        }
+        // let index = this.state.curIndex;
+        // if (index < this.len) {
+        //     this.setState({ curIndex: index + 1 }, () => {
+        //         this.refs && this.refs.swiper && this.refs.swiper.jumpToCardIndex(index + 1);
+        //     })
+        // }
     }
 
     swipeRight() {
-        if (this.state.curIndex < this.len) {
-            setTimeout(() => {
-                this.refs && this.refs.swiper && this.refs.swiper.jumpToCardIndex(this.state.curIndex + 1);
-            }, 500)
+        // let index = this.state.curIndex;
+        // if (index > 0) {
+        //     this.setState({ curIndex: index - 1 }, () => {
+        //         this.refs && this.refs.swiper && this.refs.swiper.jumpToCardIndex(index - 1);
+        //     })
+        // }
+    }
+
+    onSwipedLeft(cardIndex) {
+        if (cardIndex < this.len) {
+            this.setState({ curIndex: cardIndex + 1 }, () => {
+                this.refs && this.refs.swiper && this.refs.swiper.jumpToCardIndex(cardIndex + 1);
+            })
         }
     }
 
-    onSwiped(cardIndex) {
-        this.setState({ curIndex: cardIndex })
+    onSwipedRight(cardIndex) {
+        if (cardIndex > 0) {
+            this.setState({ curIndex: cardIndex - 1 }, () => {
+                this.refs && this.refs.swiper && this.refs.swiper.jumpToCardIndex(cardIndex - 1);
+            })
+        }
     }
 
     render() {
@@ -55,10 +69,12 @@ export default class LessonDetail extends Component {
                             </View>
                         )
                     }}
-                    onSwiped={(cardIndex) => this.onSwiped(cardIndex)}
-                    goBackToPreviousCardOnSwipeLeft={this.state.curIndex < this.len}
-                    goBackToPreviousCardOnSwipeRight={this.state.curIndex > 0}
-                    showSecondCard={false}
+                    // onSwiped={(cardIndex) => this.onSwiped(cardIndex)}
+                    // onSwipedLeft={(cardIndex) => this.onSwipedLeft(cardIndex)}
+                    // onSwipedRight={(cardIndex) => this.onSwipedRight(cardIndex)}
+                    // goBackToPreviousCardOnSwipeLeft={this.state.curIndex < this.len}
+                    // goBackToPreviousCardOnSwipeRight={this.state.curIndex > 0}
+                    // showSecondCard={false}
                     onSwipedAll={() => this.dissmissCurrentModal()}
                     cardIndex={0}
                     disableBottomSwipe={true}
@@ -66,11 +82,8 @@ export default class LessonDetail extends Component {
                     backgroundColor={config.color.mainColor}>
                     <View style={styles.swipeSymbol}>
                         <TouchableOpacity
-                            style={{ flex: 1 }}
-                            onPress={() => this.swipeRight()}>
-                            {
-                                this.state.curIndex > 0 ? <Ionicons name='ios-undo' size={40} color='white' style={{ textAlign: 'left' }} /> : null
-                            }
+                            style={{ flex: 1 }}>
+                            <Ionicons name='ios-undo' size={40} color='white' style={{ textAlign: 'left' }} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{ flex: 1 }}
@@ -78,11 +91,8 @@ export default class LessonDetail extends Component {
                             <Ionicons name='ios-close-circle' size={40} color='white' style={{ textAlign: 'center' }} />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={{ flex: 1 }}
-                            onPress={() => this.swipeLeft()}>
-                            {
-                                this.state.curIndex < this.len ? <Ionicons name='ios-redo' size={40} color='white' style={{ textAlign: 'right' }} /> : null
-                            }
+                            style={{ flex: 1 }}>
+                            <Ionicons name='ios-redo' size={40} color='white' style={{ textAlign: 'right' }} />
                         </TouchableOpacity>
                     </View>
                 </Swiper>
