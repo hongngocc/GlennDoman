@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import config from '../../config';
 import globalStyle from '../../globalStyle';
 import { FloatingAction } from 'react-native-floating-action';
+import Tts from 'react-native-tts';
 
 export default class LessonDetail extends Component {
     constructor(props) {
