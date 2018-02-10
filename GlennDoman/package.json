@@ -4,20 +4,24 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "restart": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json && yarn restart",
+    "restart": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json && yarn start",
     "test": "jest"
   },
   "dependencies": {
+    "modal": "^1.2.0",
+    "native-base": "^2.3.8",
     "react": "16.2.0",
-    "react-native": "0.53.0",
+    "react-native": "^0.53.0",
+    "react-native-floating-action": "^1.9.0",
+    "react-native-modal": "^5.0.0",
     "react-native-navigation": "^1.1.375",
     "react-native-vector-icons": "^4.5.0",
     "react-redux": "^5.0.6",
+    "realm": "^2.2.7",
     "redux": "^3.7.2",
     "redux-devtools": "^3.4.1",
     "redux-persist": "^5.6.12",
-    "redux-thunk": "^2.2.0",
-    "realm": "^2.2.7"
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-jest": "22.2.2",
