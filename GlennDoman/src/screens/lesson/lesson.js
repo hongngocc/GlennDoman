@@ -81,8 +81,15 @@ export default class Lesson extends Component {
         console.log('edited');
     }
 
-    showUnitDetail() {
-        console.log('showed');
+    showUnitDetail(listWord) {
+        this.props.navigator.showModal({
+            screen: "kids.LessonDetail",
+            passProps: {
+                listWord: listWord || []
+            },
+            navigatorStyle: globalStyle.navigatorNoHeaderStyle,
+            animationType: 'slide-up'
+        });
     }
 
     renderRow(rowData, index) {
@@ -120,7 +127,7 @@ export default class Lesson extends Component {
                         autoClose='true'
                         backgroundColor='transparent'>
                         <TouchableOpacity style={{ width: '100%', height: '100%', justifyContent: 'center' }}
-                            onPress={() => this.showUnitDetail()}>
+                            onPress={() => this.showUnitDetail(rowData.words)}>
                             <View style={styles.rowContent}>
                                 <Image style={{ width: 64, height: 64 }} source={rowData.icon} />
                                 <View style={styles.rightContent}>

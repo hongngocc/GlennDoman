@@ -36,6 +36,10 @@ export default {
         drawUnderTabBar: false,
         navBarTextFontBold: true
     },
+    navigatorNoHeaderStyle: {
+        statusBarColor: config.background.statusBar,
+        navBarHidden: true
+    },
     tabsStyle: {
         tabBarButtonColor: config.color.disableColor,
         tabBarSelectedButtonColor: config.color.mainColor,
