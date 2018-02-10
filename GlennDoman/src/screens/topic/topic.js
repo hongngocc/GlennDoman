@@ -45,11 +45,25 @@ export default class Topic extends Component {
     }
 
     loadData() {
-        let topics = RealmManager.getAllTopic();
+        let topics = RealmManager.getAllTopic(this.reloadData.bind(this));
         topics.then(data => {
             this.setState({
                 listTopic: data
             })
+        })
+    }
+
+    reloadData(realm) {
+        realm.objects('Topic');
+        let topicRealm = realm.objects('Topic');
+        let topics = []
+        topicRealm.forEach(value => {
+            let valueS = JSON.stringify(value);
+            let valueJSOn = JSON.parse(valueS);
+            topics.push(valueJSOn)
+        })
+        this.setState({
+            listTopic: topics
         })
     }
 
@@ -72,23 +86,34 @@ export default class Topic extends Component {
     }
 
     addNewTopic() {
+        this.toggleModal()
         let topicObj = {};
+        topicObj.icon = '';
+        topicObj.words = [];
         topicObj.title = this.state.newTopic;
         topicObj.time = new Date().getTime().toString();
-        console.log('OBJ:', topicObj)
-        RealmManager.createTopic(topicObj)
-        let topics = RealmManager.getAllTopic();
-        topics.then(data => {
-            this.setState({
-                listTopic: data
-            })
+        RealmManager.createTopic(topicObj);
+        // let topics = RealmManager.getAllTopic();
+        // topics.then(data => {
+        //     this.setState({
+        //         listTopic: data
+        //     })
+        // })
+    }
+
+    showDetails(element) {
+        this.props.navigator.push({
+            screen: {
+                screen: 'kids.TopicDetails'
+            },
+            passProps: {element}
         })
-        this.toggleModal()
     }
 
     renderTopic(element) {
         return (
-            <View style={{ flex: 1 }}>
+            <TouchableOpacity onPress={() => this.showDetails(element)}
+            style={{ flex: 1 }}>
                 <View style={styles.topic}>
                     <Card style={{ padding: 16 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
@@ -97,7 +122,7 @@ export default class Topic extends Component {
                         <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require('../../img/animal.png')} />
                     </Card>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -135,6 +160,7 @@ export default class Topic extends Component {
         )
     }
     render() {
+        console.log(this.state.listTopic)
         return (
             <View style={{ flex: 1, padding: 16 }}>
                 <FlatList data={this.state.listTopic} renderItem={({ item }) => this.renderTopic(item)}
