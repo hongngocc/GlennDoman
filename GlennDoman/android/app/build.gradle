@@ -66,6 +66,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-tts')
     compile project(':realm')
     compile project(':react-native-vector-icons')
     compile project(':react-native-navigation')

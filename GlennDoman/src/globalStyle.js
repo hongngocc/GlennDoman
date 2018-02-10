@@ -22,6 +22,15 @@ export default {
         fontSize: font.fontSizeM,
         color: font.fontColor
     },
+    textHugoCard: {
+        opacity: font.opacity1,
+        fontFamily: font.fontMedium,
+        color: font.fontColor,
+        fontWeight: '500',
+        textAlign: 'center',
+        fontSize: 64,
+        backgroundColor: 'transparent'
+    },
     navigatorStyle: {
         statusBarColor: config.background.statusBar,
         navBarBackgroundColor: config.background.navBar,

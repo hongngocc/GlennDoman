@@ -4,13 +4,17 @@ import Swiper from 'react-native-deck-swiper';
 import styles from './style/lesson.detail';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import config from '../../config';
+import globalStyle from '../../globalStyle';
+import { FloatingAction } from 'react-native-floating-action';
+import Speech from 'react-native-speech';
 
 export default class LessonDetail extends Component {
     constructor(props) {
         super(props);
         // this.len = this.props.listWord ? this.props.listWord.length - 1 : 0;
         this.state = {
-            curIndex: 0
+            curIndex: 0,
+            curWord: this.props.listWord[0] || ''
         };
         this.swipeLeft = this.swipeLeft.bind(this);
         this.swipeRight = this.swipeRight.bind(this);
@@ -56,6 +60,24 @@ export default class LessonDetail extends Component {
         }
     }
 
+    playVoice() {
+        Speech.speak({
+            text: 'Aujourd\'hui, Maman est morte. Ou peut-être hier, je ne sais pas.',
+            voice: 'fr-FR'
+        })
+            .then(started => {
+                console.log('Speech started');
+            })
+            .catch(error => {
+                console.log('You\'ve already started a speech instance.');
+            });
+    }
+
+    onSwiped(cardIndex) {
+        let index = cardIndex + 1;
+        this.setState({ curWord: this.props.listWord[index] });
+    }
+
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
@@ -65,11 +87,16 @@ export default class LessonDetail extends Component {
                     renderCard={(card) => {
                         return (
                             <View style={styles.card}>
-                                <Text style={styles.text}>{card}</Text>
+                                <Text style={globalStyle.textHugoCard}>{card}</Text>
+                                <FloatingAction showBackground={false}
+                                    buttonColor={config.color.mainColor}
+                                    floatingIcon={<Ionicons name='md-volume-up' size={36} color='white' />}
+                                    onPressMain={() => this.playVoice()}
+                                />
                             </View>
                         )
                     }}
-                    // onSwiped={(cardIndex) => this.onSwiped(cardIndex)}
+                    onSwiped={(cardIndex) => this.onSwiped(cardIndex)}
                     // onSwipedLeft={(cardIndex) => this.onSwipedLeft(cardIndex)}
                     // onSwipedRight={(cardIndex) => this.onSwipedRight(cardIndex)}
                     // goBackToPreviousCardOnSwipeLeft={this.state.curIndex < this.len}
@@ -79,6 +106,7 @@ export default class LessonDetail extends Component {
                     cardIndex={0}
                     disableBottomSwipe={true}
                     disableTopSwipe={true}
+                    overlayLabelStyle={{ fontSize: 20 }}
                     backgroundColor={config.color.mainColor}>
                     <View style={styles.swipeSymbol}>
                         <TouchableOpacity

@@ -21,6 +21,7 @@ public class MainApplication extends NavigationApplication {
      protected List<ReactPackage> getPackages() {
          return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new TextToSpeechPackage(),
                 new NavigationReactPackage(),
                 new VectorIconsPackage(),
                 new RealmReactPackage()

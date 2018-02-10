@@ -15,11 +15,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
     },
-    text: {
-        textAlign: 'center',
-        fontSize: 50,
-        backgroundColor: 'transparent'
-    },
     swipeSymbol: {
         width: '100%',
         flexDirection: 'row',
