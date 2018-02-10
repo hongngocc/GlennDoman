@@ -85,7 +85,7 @@ export default class Topic extends Component {
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
                             <Text style={globalStyle.textMain}>{element.title}</Text>
                         </View>
-                        <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require(element.icon)} />
+                        <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require('../../img/animal.png')} />
                     </Card>
                 </View>
             </View>

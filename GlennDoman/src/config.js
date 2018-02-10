@@ -8,6 +8,7 @@ module.exports = {
         disableColor: '#9E9E9E',
         navText: '#FFFFFF',
         lightBlue: '#03A9F4',
+        darkBlue: '#2B58B3',
         red: '#F44336'
     },
     font: {
