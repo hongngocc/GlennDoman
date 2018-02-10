@@ -16,6 +16,12 @@ export default {
         fontWeight: '500',
         color: font.fontColor
     },
+    textSubLight: {
+        opacity: font.opacity3,
+        fontFamily: font.fontLight,
+        fontSize: font.fontSizeM,
+        color: font.fontColor
+    },
     navigatorStyle: {
         statusBarColor: config.background.statusBar,
         navBarBackgroundColor: config.background.navBar,

@@ -7,6 +7,7 @@ import { Card } from 'native-base';
 import styles from './style/lesson';
 import { FloatingAction } from 'react-native-floating-action';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
 
 const { width, hight } = Dimensions.get('window');
 
@@ -113,7 +114,7 @@ export default class Lesson extends Component {
         }
         return (
             <View key={index} style={styles.rowContainer}>
-                <Card style={styles.cardContainer}>
+                <Card>
                     <Swipeout right={swipeBtns}
                         style={{ width: '100%', height: '100%' }}
                         autoClose='true'
@@ -123,7 +124,10 @@ export default class Lesson extends Component {
                             <View style={styles.rowContent}>
                                 <Image style={{ width: 64, height: 64 }} source={rowData.icon} />
                                 <View style={styles.rightContent}>
-                                    <Text numberOfLines={1} style={globalStyle.textMainMedium}> {rowData.topic} </Text>
+                                    <View style={{ width: '100%', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text numberOfLines={1} style={[globalStyle.textMainMedium, { flex: 1 }]}> {rowData.topic} </Text>
+                                        <Text numberOfLines={1} style={[globalStyle.textSubLight, { flex: 2, textAlign: 'right' }]}> {moment(new Date(rowData.time)).format('DD MMM YYYY HH:mm:ss')} </Text>
+                                    </View>
                                     <Text numberOfLines={2} style={globalStyle.textMain}> {words} </Text>
                                 </View>
                             </View>
