@@ -1,10 +1,14 @@
 import font from './font/font';
 
+const paddingSizeStandard = 16;
+
 module.exports = {
     color: {
         mainColor: '#673AB7',
         disableColor: '#9E9E9E',
-        navText: '#FFFFFF'
+        navText: '#FFFFFF',
+        lightBlue: '#03A9F4',
+        red: '#F44336'
     },
     font: {
         navFont: font.fontFamily,
@@ -15,5 +19,6 @@ module.exports = {
         navBar: '#673AB7',
         tabBar: '#FFFFFF',
         navButton: '#FFFFFF'
-    }
+    },
+    paddingSize: paddingSizeStandard
 }

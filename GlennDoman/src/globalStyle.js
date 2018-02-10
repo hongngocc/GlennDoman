@@ -6,7 +6,14 @@ export default {
     textMain: {
         opacity: font.opacity1,
         fontFamily: font.fontFamily,
-        fontSize: font.fontSizeM,
+        fontSize: font.fontSizeL,
+        color: font.fontColor
+    },
+    textMainMedium: {
+        opacity: font.opacity1,
+        fontFamily: font.fontMedium,
+        fontSize: font.fontSizeXL,
+        fontWeight: '500',
         color: font.fontColor
     },
     navigatorStyle: {
@@ -20,12 +27,13 @@ export default {
         navBarTextFontSize: config.font.navSize,
         navBarButtonColor: config.background.navButton,
         statusBarTextColorScheme: 'light',
-        drawUnderTabBar: false
+        drawUnderTabBar: false,
+        navBarTextFontBold: true
     },
     tabsStyle: {
         tabBarButtonColor: config.color.disableColor,
         tabBarSelectedButtonColor: config.color.mainColor,
         tabBarBackgroundColor: config.background.tabBar,
-        initialTabIndex: 1
+        initialTabIndex: 0
     }
 }
