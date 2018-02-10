@@ -5,6 +5,7 @@ import { registerScreens } from './screens';
 import configureStore from './store/configureStore';
 import { Provider, connect } from 'react-redux';
 import globalStyle from './globalStyle';
+import { initData } from '../src/utils/initData';
 
 const store = configureStore();
 registerScreens(store, Provider);
@@ -18,6 +19,7 @@ export default class App extends Component {
         }).catch(error => {
             console.log('load icon failed: ', error);
         });
+        initData();
     }
 
     callbackAfterLogin() {
