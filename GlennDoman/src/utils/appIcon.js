@@ -44,7 +44,13 @@ const icons = {
     'ios-card': ['Ionicons', 24, '#FFFF'],
     'ios-card-outline': ['Ionicons', 24, '#FFFF'],
     'ios-pin': ['Ionicons', 24, '#FFFF'],
-    'ios-pin-outline': ['Ionicons', 24, '#FFFF']
+    'ios-pin-outline': ['Ionicons', 24, '#FFFF'],
+    'ios-book': ['Ionicons', 24],
+    'ios-book-outline': ['Ionicons', 24],
+    'ios-timer': ['Ionicons', 24],
+    'ios-timer-outline': ['Ionicons', 24],
+    'ios-settings': ['Ionicons', 24],
+    'ios-settings-outline': ['Ionicons', 24],
 };
 
 const iconsMap = {};

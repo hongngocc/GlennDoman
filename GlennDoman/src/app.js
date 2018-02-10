@@ -4,6 +4,7 @@ import { Navigation } from 'react-native-navigation';
 import { registerScreens } from './screens';
 import configureStore from './store/configureStore';
 import { Provider, connect } from 'react-redux';
+import globalStyle from './globalStyle';
 
 const store = configureStore();
 registerScreens(store, Provider);
@@ -24,33 +25,35 @@ export default class App extends Component {
             tabs: [
                 {
                     label: 'Lesson',
-                    screen: 'kids.Lesson', // this is a registered name for a screen
-                    icon: iconsMap['ios-film'],
-                    //   selectedIcon: require('../img/one_selected.png'), // iOS only
-                    title: 'Screen One'
+                    screen: 'kids.Lesson',
+                    icon: iconsMap['ios-book'],
+                    title: 'Lesson',
+                    navigatorStyle: globalStyle.navigatorStyle
                 },
                 {
                     label: 'History',
                     screen: 'kids.History',
-                    icon: iconsMap['ios-film'],
-                    //   selectedIcon: require('../img/two_selected.png'), // iOS only
-                    title: 'Screen Two'
+                    icon: iconsMap['ios-timer'],
+                    title: 'History',
+                    navigatorStyle: globalStyle.navigatorStyle
                 },
                 {
                     label: 'Topic',
                     screen: 'kids.Topic',
-                    icon: iconsMap['ios-film'],
-                    //   selectedIcon: require('../img/two_selected.png'), // iOS only
-                    title: 'Screen Two'
+                    icon: iconsMap['ios-list-box'],
+                    title: 'Topic',
+                    navigatorStyle: globalStyle.navigatorStyle
                 },
                 {
-                    label: 'Setting',
+                    label: 'Settings',
                     screen: 'kids.Settings',
-                    icon: iconsMap['ios-film'],
-                    //   selectedIcon: require('../img/two_selected.png'), // iOS only
-                    title: 'Screen Two'
+                    icon: iconsMap['ios-settings'],
+                    title: 'Settings',
+                    navigatorStyle: globalStyle.navigatorStyle
                 }
-            ]
+            ],
+            tabsStyle: globalStyle.tabsStyle,
+            appStyle: globalStyle.tabsStyle
         });
     }
 }
