@@ -7,7 +7,11 @@ export default RealmManager = {
         Realm.open({
             schema: [schema.topicSchema, schema.wordSchema]
           }).then(realm => {
-                realm.write()
+                realm.write(() => {
+                    const animalTopic = realm.create('Animal', {
+                        
+                    })
+                })
           })
     }
 }
