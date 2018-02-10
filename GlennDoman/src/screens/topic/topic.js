@@ -16,7 +16,7 @@ import Modal from 'react-native-modal';
 import Swipeout from 'react-native-swipeout';
 import { Card } from 'native-base';
 import globalStyle from '../../globalStyle';
-import * as RealmManager from '../../realm/realm';
+import RealmManager from '../../realm/realm';
 
 const actions = [{
     text: 'Add Topic',
@@ -46,7 +46,11 @@ export default class Topic extends Component {
 
     loadData() {
         let topics = RealmManager.getAllTopic();
-        console.log(topics)
+        topics.then(data => {
+            this.setState({
+                listTopic: data
+            })
+        })
     }
 
     onPressFab(name) {
