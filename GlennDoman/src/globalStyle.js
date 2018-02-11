@@ -31,6 +31,15 @@ export default {
         fontSize: 64,
         backgroundColor: 'transparent'
     },
+    textWordCard: {
+        opacity: font.opacity1,
+        fontFamily: font.fontMedium,
+        color: font.fontColor,
+        fontWeight: '400',
+        textAlign: 'center',
+        fontSize: 24,
+        backgroundColor: 'transparent'
+    },
     navigatorStyle: {
         statusBarColor: config.background.statusBar,
         navBarBackgroundColor: config.background.navBar,

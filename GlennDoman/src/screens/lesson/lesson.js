@@ -41,7 +41,7 @@ const listDataFaker = [
         icon: require('../../img/fruit.png'),
         topic: 'Fruit',
         words: [
-            'Apple', 'Banana', 'Lemon, Pear, Bean, Tomato, Water Lemon, strawberry, coconut, cucumber'
+            'Apple', 'Banana', 'Lemon', 'Pear', 'Bean', 'Tomato', 'Water Lemon', 'strawberry', 'coconut', 'cucumber'
         ],
         time: new Date().getTime()
     }
@@ -86,7 +86,6 @@ export default class Lesson extends Component {
             navigatorButtons: {
                 rightButtons: [
                     {
-                        title: 'Done',
                         id: 'edit_lesson_done',
                         icon: iconsMap['md-checkmark']
                     }
