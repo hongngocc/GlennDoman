@@ -39,7 +39,7 @@ export default class Settings extends Component {
     render() {
         return (
             <View style={{ flex: 1, marginTop: 56 }}>
-                <ScrollView>
+                {/* <ScrollView>
                     <View style={{ flex: 1, backgroundColor: this.state.stateColor, paddingBottom: 24 }}>
                         <Text style={[globalStyle.textMain, { marginLeft: 16, color: '#ffffff', fontWeight: 'bold' }]}>Text Setting</Text>
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -113,7 +113,7 @@ export default class Settings extends Component {
                             </View>
                         </View>
                     </View>
-                </ScrollView>
+                </ScrollView> */}
             </View>
         );
     }

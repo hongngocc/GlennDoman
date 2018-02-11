@@ -141,7 +141,7 @@ export default class Lesson extends Component {
                 <Card>
                     <Swipeout right={swipeBtns}
                         style={{ width: '100%', height: '100%' }}
-                        autoClose='true'
+                        autoClose={true}
                         backgroundColor='transparent'>
                         <TouchableOpacity style={{ width: '100%', height: '100%', justifyContent: 'center' }}
                             onPress={() => this.showUnitDetail(rowData.words)}>

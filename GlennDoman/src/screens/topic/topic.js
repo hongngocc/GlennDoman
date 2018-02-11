@@ -17,18 +17,7 @@ import Swipeout from 'react-native-swipeout';
 import { Card } from 'native-base';
 import globalStyle from '../../globalStyle';
 import RealmManager from '../../realm/realm';
-
-const actions = [{
-    text: 'Add Topic',
-    name: 'bt_add_topic',
-    position: 1,
-
-}, {
-    text: 'Edit Topic',
-    // icon: require('./images/ic_accessibility_white.png'),
-    name: 'bt_edit-topic',
-    position: 2
-}];
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class Topic extends Component {
     constructor(props) {
@@ -40,80 +29,64 @@ export default class Topic extends Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.loadData()
     }
 
+    componentWillUnmount() {
+        RealmManager.unregisterChange()
+    }
+
     loadData() {
-        let topics = RealmManager.getAllTopic(this.reloadData.bind(this));
-        topics.then(data => {
+        let topics = RealmManager.getAllTopic();
+        let _listTopic = [];
+        topics.then(proxy => {
+            proxy.forEach(topicRealm => {
+                _listTopic.push(topicRealm)
+            })
             this.setState({
-                listTopic: data
+                listTopic: _listTopic
             })
         })
     }
 
-    reloadData(realm) {
-        realm.objects('Topic');
-        let topicRealm = realm.objects('Topic');
-        let topics = []
-        topicRealm.forEach(value => {
-            let valueS = JSON.stringify(value);
-            let valueJSOn = JSON.parse(valueS);
-            topics.push(valueJSOn)
-        })
+    openModal() {
         this.setState({
-            listTopic: topics
+            visibleModal: true
         })
     }
 
-    onPressFab(name) {
-        switch (name) {
-            case 'bt_add_topic':
-                this.toggleModal()
-                break;
-            case 'bt_edit-topic':
-                break;
-        }
-    }
-
-    toggleModal() {
-        this.setState(prevState => {
-            this.setState({
-                visibleModal: !prevState.visibleModal
-            })
+    closeModal() {
+        this.setState({
+            visibleModal: false
         })
     }
 
     addNewTopic() {
-        this.toggleModal()
+        this.closeModal()
         let topicObj = {};
         topicObj.icon = '';
         topicObj.words = [];
         topicObj.title = this.state.newTopic;
         topicObj.time = new Date().getTime().toString();
         RealmManager.createTopic(topicObj);
-        // let topics = RealmManager.getAllTopic();
-        // topics.then(data => {
-        //     this.setState({
-        //         listTopic: data
-        //     })
-        // })
+        this.loadData()
     }
 
     showDetails(element) {
-        this.props.navigator.push({
-            screen: {
-                screen: 'kids.TopicDetails'
-            },
-            passProps: {element}
-        })
+        let topicRealm = JSON.stringify(element);
+        this.props.navigator.showModal({
+            screen: 'kids.TopicDetails',
+            title: element.title,
+            passProps: {title: element.title, topicRealm: topicRealm},
+            animationType: 'slide-up'
+        });
     }
 
     renderTopic(element) {
         return (
             <TouchableOpacity onPress={() => this.showDetails(element)}
-            style={{ flex: 1 }}>
+                style={{ flex: 1 }}>
                 <View style={styles.topic}>
                     <Card style={{ padding: 16 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
@@ -129,8 +102,8 @@ export default class Topic extends Component {
     renderModal() {
         return (
             <Modal
-                onBackButtonPress={() => this.toggleModal()}
-                onBackdropPress={() => this.toggleModal()} backdropOpacity={0.6} visible={this.state.visibleModal}>
+                onBackButtonPress={() => this.closeModal()}
+                onBackdropPress={() => this.closeModal()} backdropOpacity={0.6} visible={this.state.visibleModal}>
                 <View style={styles.modal}>
                     <View style={{ flex: 6, padding: 16, justifyContent: 'space-between' }}>
                         <Text style={{ fontSize: 20, alignSelf: 'center', marginBottom: 10 }}>New Topic</Text>
@@ -151,7 +124,8 @@ export default class Topic extends Component {
                             style={styles.btn}>
                             <Text>OK</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.btn}>
+                        <TouchableOpacity onPress={() => this.closeModal()}
+                            style={styles.btn}>
                             <Text>Cancel</Text>
                         </TouchableOpacity>
                     </View>
@@ -160,19 +134,14 @@ export default class Topic extends Component {
         )
     }
     render() {
-        console.log(this.state.listTopic)
         return (
             <View style={{ flex: 1, padding: 16 }}>
                 <FlatList data={this.state.listTopic} renderItem={({ item }) => this.renderTopic(item)}
                     numColumns={2} style={{ marginTop: 56 }}>
                 </FlatList>
                 <FloatingAction showBackground={false}
-                    actions={actions}
-                    onPressItem={
-                        (name) => {
-                            this.onPressFab(name)
-                        }
-                    }
+                    onPressMain={() => this.openModal()}
+                    floatingIcon={<Ionicons name='ios-add' size={36} color='white' />}
                 />
                 {
                     this.renderModal()

@@ -2,22 +2,35 @@ import Realm from 'realm';
 
 import * as schema from '../realm/schema/schema';
 export const initData = () => {
-    Realm.open({ schema: [schema.topicSchema] })
+
+    Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
         .then(realm => {
-            if (realm.objects('Topic').length === 0) {
-                realm.write(() => {
-                    const animalTopic = realm.create('Topic', {
-                        title: 'Animals',
-                        words: ['Cat', 'Panda', 'Dog'],
-                        icon: '../../img/animal.png',
-                        time: new Date().getTime().toString()
-                    })
-                })
-            } else {
-                return;
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
+            realm.write(() => {
+                let topic = realm.create('Topic', {
+                    title: 'Animals',
+                    words: [],
+                    icon: '',
+                    time: new Date().getTime().toString()
+                });
+                topic.words.push({ text: 'Cat', isComplete: false, path: '' });
+                topic.words.push({ text: 'Dog', isComplete: false, path: '' });
+                topic.words.push({ text: 'Bear', isComplete: false, path: '' });
+                topic.words.push({ text: 'Fish', isComplete: false, path: '' });
+                topic.words.push({ text: 'Elephant', isComplete: false, path: '' });
+
+                let family = realm.create('Topic', {
+                    title: 'Family',
+                    words: [],
+                    icon: '',
+                    time: new Date().getTime().toString()
+                });
+
+                family.words.push({ text: 'Dad', isComplete: false, path: '' });
+                family.words.push({ text: 'Mommy', isComplete: false, path: '' });
+                family.words.push({ text: 'Uncle', isComplete: false, path: '' });
+                family.words.push({ text: 'Brother', isComplete: false, path: '' });
+                family.words.push({ text: 'Sister', isComplete: false, path: '' });
+            });
+            realm.close();
+        }).catch(err => {});
 }

@@ -2,33 +2,54 @@ import Realm from 'realm';
 
 import * as schema from './schema/schema';
 
-const ref = Realm.open({
-    schema: [schema.topicSchema]
-});
-
 export default RealmManager = {
-    getAllTopic: (callback) => ref.then(realm => {
-        let topicRealm = realm.objects('Topic');
-        let topics = []
-        console.log(topicRealm.length)
-        topicRealm.forEach(value => {
-            let valueS = JSON.stringify(value);
-            let valueJSOn = JSON.parse(valueS);
-            topics.push(valueJSOn)
+    getAllTopic: () => Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+        .then(realm => {
+            let topicRealm = realm.objects('Topic');
+            return topicRealm;
         })
-        realm.addListener('change', callback)
-        return topics;
-    }),
-    createTopic: function (topicObj) {
-        ref.then(realm => {
-            realm.write(() => {
-            realm.create('Topic', topicObj)
+        .catch(err => console.log('Can not get by error: ', err)),
+
+    createTopic: function (topicObj, isUpdate = false) {
+        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                realm.write(() => {
+                    realm.create('Topic', topicObj, isUpdate);
+                })
             })
-        })
+            .catch(err => console.log('Can not create by error: ', err))
     },
-    updateTopic: function(topicObj) {
-        ref.then(realm => {
-            realm.create('Topic', topicObj, true);
-        })
-    }
+    
+    deleteTopic: function (topicObj) {
+        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                realm.write(() => {
+                    realm.delete(topicObj);
+                })
+            })
+            .catch(err => console.log('Can not delete Topic by error: ', err))
+    },
+
+    deleleWord: function (wordObj) {
+        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                realm.delete(wordObj);
+            })
+            .catch(err => { console.log('Can not delete Word by error: ', err); })
+    },
+
+    unregisterChange: function () {
+        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                realm.removeListener('change')
+                realm.close();
+            });
+    },
+
+    loadTopicByName: (topicName) =>
+        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                let choosedTopic = realm.objects('Topic').filtered(`title = "${topicName}"`);
+                return choosedTopic;
+            }),
 }
