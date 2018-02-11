@@ -82,7 +82,7 @@ export default class Topic extends Component {
             screen: 'kids.TopicDetails',
             title: element.title,
             passProps: {title: element.title, topicRealm: topicRealm},
-            animationType: 'slide-up',
+            animationType: 'none',
             navigatorStyle: globalStyle.navigatorStyle
         });
     }
@@ -94,7 +94,7 @@ export default class Topic extends Component {
                 <View style={styles.topic}>
                     <Card style={{ padding: 16 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
-                            <Text style={globalStyle.textMain}>{element.title}</Text>
+                            <Text style={[globalStyle.textMain, { color: config.color.mainColor }]}>{element.title}</Text>
                         </View>
                         <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require('../../img/animal.png')} />
                     </Card>
@@ -110,18 +110,18 @@ export default class Topic extends Component {
                 onBackdropPress={() => this.closeModal()} backdropOpacity={0.5} visible={this.state.visibleModal}>
                 <View style={styles.modal}>
                     <View style={{ flex: 6, padding: 16, justifyContent: 'space-between' }}>
-                        <Text style={{ fontSize: 20, alignSelf: 'center', marginBottom: 10 }}>New Topic</Text>
+                        <Text style={{ fontSize: 20, alignSelf: 'center', marginBottom: 10, color: config.color.mainColor }}>New Topic</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ width: '20%' }}>Title: </Text>
                             <TextInput style={{ width: 200 }} placeholder='Input Topic Title'
-                                underlineColorAndroid='#d2d2d2'
+                                underlineColorAndroid='#d34836'
                                 onChangeText={(text) => this.setState({
                                     newTopic: text
                                 })}
                             ></TextInput>
                         </View>
                         <Text>Icon: </Text>
-                        <View style={{ marginTop: 10, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: 'black', opacity: 0.2 }}></View>
+                        <View style={{ marginTop: 10, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: config.color.mainColor }}></View>
                     </View>
                     <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => this.addNewTopic()}
@@ -166,7 +166,8 @@ const styles = StyleSheet.create({
     btn: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingBottom: 16
     },
     icon: {
         width: 48,

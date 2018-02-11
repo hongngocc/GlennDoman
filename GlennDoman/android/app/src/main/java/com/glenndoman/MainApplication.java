@@ -6,6 +6,8 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.bridge.NavigationReactPackage;
 
+import net.no_mad.tts.TextToSpeechPackage;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class MainApplication extends NavigationApplication {
      protected List<ReactPackage> getPackages() {
          return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new TextToSpeechPackage(),
                 new NavigationReactPackage(),
                 new VectorIconsPackage(),
                 new RealmReactPackage()

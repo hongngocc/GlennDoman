@@ -1,3 +1,5 @@
+import React from 'react';
+import {ToastAndroid} from 'react-native';
 import Realm from 'realm';
 
 import * as schema from './schema/schema';
@@ -71,7 +73,7 @@ export default RealmManager = {
                     realm.create('Topic', topicRealmObj, isUpdate);
                 })
             })
-            .catch(err => console.log('Can not add new word', err)),
+            .catch(err => ToastAndroid.show('Can not create', ToastAndroid.SHORT, ToastAndroid.BOTTOM)),
     
     register: (tag, callback) => Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
     .then(realm => {
@@ -84,4 +86,21 @@ export default RealmManager = {
         realm.removeListener(tag, callback);
     })
     .catch(err => {}),
+
+    toggleCompleteState: (text) => {
+        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+        .then(realm => {
+            realm.write(() => {
+                let word = realm.objects('Word').filtered(`text = "${text}"`);
+                let wordObjRealm = {};
+                word.forEach(value => {
+                    wordObjRealm = value;
+                })
+
+                wordObjRealm.isComplete = !wordObjRealm.isComplete
+
+                realm.create('Word', wordObjRealm, true);
+            })
+        })
+    }
 }

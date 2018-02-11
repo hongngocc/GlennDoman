@@ -64,7 +64,7 @@ export default class Settings extends Component {
                         <Text style={[globalStyle.textMain, { marginLeft: 16, color: '#CED8E6', fontWeight: 'bold' }]}>General Settings</Text>
                         <View style={{ flex: 1, paddingLeft: 12, paddingRight: 12 }}>
                             <View style={{ height: 75 }}>
-                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: 'light' }]}> Color</Text>
+                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: '100' }]}> Color</Text>
                                 <View style={{ flexDirection: 'row', marginTop: 4, marginBottom: 4 }}>
                                     {this.renderColorPicker(arrColor)}
                                     <TouchableOpacity >
@@ -76,7 +76,7 @@ export default class Settings extends Component {
                                 <View style={{ width: '100%', backgroundColor: '#465260', opacity: 0.3, height: 2 }}></View>
                             </View>
                             <View style={{ height: 75 }}>
-                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: 'light' }]}>Number of words learned / Day</Text>
+                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: '100' }]}>Number of words learned / Day</Text>
                                 <View style={{ flexDirection: 'row', marginTop: 4, marginBottom: 4 }}>
 
                                     <TouchableOpacity >
@@ -88,7 +88,7 @@ export default class Settings extends Component {
                                 <View style={{ width: '100%', backgroundColor: '#465260', opacity: 0.3, height: 2 }}></View>
                             </View>
                             <View style={{ height: 75 }}>
-                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: 'light' }]}>Number of new words/ Day</Text>
+                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: '100' }]}>Number of new words/ Day</Text>
                                 <View style={{ flexDirection: 'row', marginTop: 4, marginBottom: 4 }}>
 
                                     <TouchableOpacity >
@@ -100,7 +100,7 @@ export default class Settings extends Component {
                                 <View style={{ width: '100%', backgroundColor: '#465260', opacity: 0.3, height: 2 }}></View>
                             </View>
                             <View style={{ height: 75 }}>
-                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: 'light' }]}>Languages</Text>
+                                <Text style={[globalStyle.textSubLight, { color: 'gray', fontWeight: '100' }]}>Languages</Text>
                                 <View style={{ flexDirection: 'row', marginTop: 4, marginBottom: 4 }}>
 
                                     <TouchableOpacity >
