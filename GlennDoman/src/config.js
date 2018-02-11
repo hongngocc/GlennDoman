@@ -4,7 +4,7 @@ const paddingSizeStandard = 16;
 
 module.exports = {
     color: {
-        mainColor: '#673AB7',
+        mainColor: '#d34836',
         disableColor: '#9E9E9E',
         navText: '#FFFFFF',
         lightBlue: '#03A9F4',
@@ -16,8 +16,8 @@ module.exports = {
         navSize: 20
     },
     background: {
-        statusBar: '#673AB7',
-        navBar: '#673AB7',
+        statusBar: '#d34836',
+        navBar: '#d34836',
         tabBar: '#FFFFFF',
         navButton: '#FFFFFF'
     },

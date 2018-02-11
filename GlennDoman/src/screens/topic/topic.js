@@ -19,6 +19,8 @@ import globalStyle from '../../globalStyle';
 import RealmManager from '../../realm/realm';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import config from '../../config';
+
 export default class Topic extends Component {
     constructor(props) {
         super(props)
@@ -30,6 +32,7 @@ export default class Topic extends Component {
     }
 
     componentDidMount() {
+        RealmManager.loadTopicByName('Animals');
         this.loadData()
     }
 
@@ -79,7 +82,8 @@ export default class Topic extends Component {
             screen: 'kids.TopicDetails',
             title: element.title,
             passProps: {title: element.title, topicRealm: topicRealm},
-            animationType: 'slide-up'
+            animationType: 'slide-up',
+            navigatorStyle: globalStyle.navigatorStyle
         });
     }
 
@@ -101,16 +105,16 @@ export default class Topic extends Component {
 
     renderModal() {
         return (
-            <Modal
+            <Modal backdropColor= 'black'
                 onBackButtonPress={() => this.closeModal()}
-                onBackdropPress={() => this.closeModal()} backdropOpacity={0.6} visible={this.state.visibleModal}>
+                onBackdropPress={() => this.closeModal()} backdropOpacity={0.5} visible={this.state.visibleModal}>
                 <View style={styles.modal}>
                     <View style={{ flex: 6, padding: 16, justifyContent: 'space-between' }}>
                         <Text style={{ fontSize: 20, alignSelf: 'center', marginBottom: 10 }}>New Topic</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ width: '20%' }}>Title: </Text>
                             <TextInput style={{ width: 200 }} placeholder='Input Topic Title'
-                                underlineColorAndroid='transparent'
+                                underlineColorAndroid='#d2d2d2'
                                 onChangeText={(text) => this.setState({
                                     newTopic: text
                                 })}
@@ -140,6 +144,7 @@ export default class Topic extends Component {
                     numColumns={2} style={{ marginTop: 56 }}>
                 </FlatList>
                 <FloatingAction showBackground={false}
+                    buttonColor={config.color.mainColor}
                     onPressMain={() => this.openModal()}
                     floatingIcon={<Ionicons name='ios-add' size={36} color='white' />}
                 />
@@ -155,7 +160,7 @@ const styles = StyleSheet.create({
     modal: {
         width: '100%',
         height: 250,
-        backgroundColor: 'white',
+        backgroundColor: '#f1f1f1',
         borderRadius: 10,
     },
     btn: {
