@@ -8,9 +8,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF'
     },
     wordContainer: {
-        width: calc((100 % - 48) / 3),
+        width: calc((width - 48) / 3),
         height: calc((width - 48) / 3)
-    },
+    }
 });
 
 export default styles;

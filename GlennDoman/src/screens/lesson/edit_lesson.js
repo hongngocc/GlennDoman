@@ -30,7 +30,7 @@ export default class EditLesson extends Component {
         return (
             <View>
                 <Card>
-                    <TouchableOpacity style={{ width: 100, height: 100 }}>
+                    <TouchableOpacity style={styles.wordContainer}>
                         <Text>{item}</Text>
                     </TouchableOpacity>
                 </Card>
