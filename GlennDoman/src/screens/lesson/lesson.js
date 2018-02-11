@@ -81,7 +81,7 @@ export default class Lesson extends Component {
     editUnit(rowData) {
         this.props.navigator.push({
             screen: 'kids.EditLesson',
-            title: 'Edit Lesson',
+            title: rowData ? moment(new Date(rowData.time)).format('DD MMM YYYY HH:mm:ss') : 'Edit Lesson',
             navigatorStyle: globalStyle.navigatorStyle,
             navigatorButtons: {
                 rightButtons: [
@@ -93,7 +93,7 @@ export default class Lesson extends Component {
                 ]
             },
             passProps: {
-                lesson: rowData
+                lesson: rowData || {}
             }
         })
     }
