@@ -6,6 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import config from '../../config';
 import globalStyle from '../../globalStyle';
 import { FloatingAction } from 'react-native-floating-action';
+import { Image } from 'react-native-animatable';
+import Tts from 'react-native-tts';
 
 export default class LessonDetail extends Component {
     constructor(props) {
@@ -13,16 +15,31 @@ export default class LessonDetail extends Component {
         // this.len = this.props.listWord ? this.props.listWord.length - 1 : 0;
         this.state = {
             curIndex: 0,
-            curWord: this.props.listWord[0] || ''
+            curWord: this.props.listWord[0] || '',
+            listWord: [],
+            visibleText: false
         };
         this.swipeLeft = this.swipeLeft.bind(this);
         this.swipeRight = this.swipeRight.bind(this);
     }
 
-    dissmissCurrentModal() {
-        this.props.navigator.dismissModal({
-            animationType: 'slide-down'
+    componentWillMount() {
+        let {listWord} = this.props;
+        let _listWord = this.state.listWord;
+        listWord.forEach(element => {
+            _listWord.push(element.text);
         });
+        this.setState({
+            listWord: _listWord,
+            visibleText: false
+        })
+    }
+
+    dissmissCurrentModal() {
+        this.setState({ visibleText: true })
+        setTimeout(() => this.props.navigator.dismissModal({
+            animationType: 'slide-down'
+        }), 1000);
     }
 
     swipeLeft() {
@@ -59,7 +76,9 @@ export default class LessonDetail extends Component {
         }
     }
 
-    playVoice() {
+    playVoice(text) {
+        Tts.stop();
+        Tts.speak(text);
     }
 
     onSwiped(cardIndex) {
@@ -68,11 +87,15 @@ export default class LessonDetail extends Component {
     }
 
     render() {
+        
         return (
             <View style={{ flex: 1, backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
                 <Swiper
                     ref='swiper'
-                    cards={this.props.listWord}
+                    // goBackToPreviousCardOnSwipeLeft={true}
+                    // showSecondCard={false}
+                    // infinite={true}
+                    cards={this.state.listWord}
                     renderCard={(card) => {
                         return (
                             <View style={styles.card}>
@@ -80,7 +103,7 @@ export default class LessonDetail extends Component {
                                 <FloatingAction showBackground={false}
                                     buttonColor={config.color.mainColor}
                                     floatingIcon={<Ionicons name='md-volume-up' size={36} color='white' />}
-                                    onPressMain={() => this.playVoice()}
+                                    onPressMain={() => this.playVoice(card)}
                                 />
                             </View>
                         )
@@ -93,26 +116,33 @@ export default class LessonDetail extends Component {
                     // showSecondCard={false}
                     onSwipedAll={() => this.dissmissCurrentModal()}
                     cardIndex={0}
-                    disableBottomSwipe={true}
-                    disableTopSwipe={true}
+                    // disableBottomSwipe={true}
+                    // disableTopSwipe={true}
                     overlayLabelStyle={{ fontSize: 20 }}
                     backgroundColor={config.color.mainColor}>
                     <View style={styles.swipeSymbol}>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={{ flex: 1 }}>
                             <Ionicons name='ios-undo' size={40} color='white' style={{ textAlign: 'left' }} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
+                        </TouchableOpacity> */}
+                        {/* <TouchableOpacity
                             style={{ flex: 1 }}
                             onPress={() => this.dissmissCurrentModal()}>
                             <Ionicons name='ios-close-circle' size={40} color='white' style={{ textAlign: 'center' }} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
+                        </TouchableOpacity> */}
+                        {/* <TouchableOpacity
                             style={{ flex: 1 }}>
                             <Ionicons name='ios-redo' size={40} color='white' style={{ textAlign: 'right' }} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </Swiper>
+                {
+                    this.state.visibleText ?
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: 'white', fontSize: 32, marginBottom: 16}}>Well done ^^</Text>
+                        <Image style={{width: 100, height: 100}} source={require('../../img/stars.png')}></Image>
+                    </View> : null
+                }
             </View>
         );
     }

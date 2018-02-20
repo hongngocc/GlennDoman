@@ -7,7 +7,9 @@ import {
     TouchableOpacity,
     StyleSheet,
     TextInput,
-    ToastAndroid
+    ToastAndroid,
+    TouchableWithoutFeedback,
+    Image
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import { Card } from 'native-base';
@@ -28,7 +30,8 @@ export default class TopicDetails extends Component {
         this.state = {
             topic: null,
             visibleModal: false,
-            newWord: ''
+            newWord: '',
+            showDeleteButton: false
         }
     }
 
@@ -38,13 +41,10 @@ export default class TopicDetails extends Component {
 
     loadTopic() {
         let topics = RealmManager.loadTopicByName(this.props.title);
-        topics.then(proxy => {
-            proxy.forEach(topicRealm => {
-                this.setState({
-                    topic: topicRealm
-                })
-            })
-        })
+        topics.then(data => this.setState({
+            topic: data
+        }))
+        .catch(err => console.log(err))
     }
 
     getListWord() {
@@ -57,6 +57,23 @@ export default class TopicDetails extends Component {
                 wordObj.isComplete = word.isComplete;
                 wordObj.path = word.path;
                 listWord.push(wordObj);
+                listWord.sort((a, b) => {
+                    if (a.isComplete < b.isComplete) {
+                        return 1;
+                    }
+                    if (a.isComplete > b.isComplete) {
+                        return -1;
+                    }
+                    
+                    if (a.text.toUpperCase() < b.text.toUpperCase()) {
+                        return -1;
+                    }
+                    if (a.text.toUpperCase() > b.text.toUpperCase()) {
+                        return 1;
+                    }
+
+                    return 0;
+                })
             })
         }
         return listWord;
@@ -93,7 +110,7 @@ export default class TopicDetails extends Component {
                         <Text style={{ fontSize: 20, alignSelf: 'center', marginBottom: 10, color: config.color.mainColor }}>New Word</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ width: '20%' }}>Text: </Text>
-                            <TextInput style={{ width: 200 }} placeholder='Input Topic Title'
+                            <TextInput style={{ width: 200 }} placeholder='Input Word'
                                 underlineColorAndroid={config.color.mainColor}
                                 onChangeText={(text) => this.setState({
                                     newWord: text
@@ -125,24 +142,41 @@ export default class TopicDetails extends Component {
     }
     
     toggleCompleteState(text) {
-        Tts.speak(text, { iosVoiceId: 'com.apple.ttsbundle.Moira-compact', language: 'vi-VI' });
-        RealmManager.toggleCompleteState(text);
-        this.loadTopic();
+        Tts.stop();
+        Tts.speak(text);
+        // RealmManager.toggleCompleteState(text);
+        // this.loadTopic();
     }
 
     render() {
         let listWord = this.getListWord()
         return (
-            <View style={{ flex: 1, backgroundColor: 'white', padding: 16, marginTop: 56 }}>
+            <TouchableWithoutFeedback onPress={() => this.setState({
+                showDeleteButton: false
+            })} style={{flex: 1}}>
+                <View style={{ flex: 1, backgroundColor: 'white', padding: 16, marginTop: 56 }}>
                 <FlatList data={listWord}
                     numColumns={3}
                     renderItem={({ item }) => {
                         return (
-                            <TouchableOpacity onPress={() => this.toggleCompleteState(item.text)}
+                            <TouchableOpacity onLongPress={() => this.setState({
+                                showDeleteButton: true
+                            })} onPress={() => this.toggleCompleteState(item.text)}
                                 key={item.text} style={{ height: widthItem, width: widthItem }}>
                                 <Card style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    {
+                                        this.state.showDeleteButton ?
+                                        <TouchableOpacity onPress={() => this.removeWord(item.text)}
+                                            style={{position: 'absolute', top: 5, right: 5,}}>
+                                            <Image source={require('../../img/remove.png')}
+                                        style={{ width: 24, height: 24 }}></Image>
+                                        </TouchableOpacity> : null
+                                    }
                                     <Text style={{ fontSize: 20 }}>{item.text}</Text>
-                                    <Text>{item.isComplete ? 'OK' : 'Not yet'}</Text>
+                                    {
+                                        item.isComplete ?
+                                        <Image source={require('../../img/confirm.png')} style={{width: 24, height: 24}}></Image> : null
+                                    }
                                 </Card>
                             </TouchableOpacity>
                         )
@@ -158,7 +192,8 @@ export default class TopicDetails extends Component {
                 {
                     this.renderModal()
                 }
-            </View>
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 }

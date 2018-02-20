@@ -19,7 +19,6 @@ export default class Settings extends Component {
         }
     }
     renderColorPicker(arrColor) {
-        console.log(arrColor)
         return (
             arrColor.map((item, index) => {
                 return (

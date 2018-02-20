@@ -68,9 +68,9 @@ export default class EditLesson extends Component {
                             this.state.isRemove ? (<View style={styles.removeContainer}>
                                 <Ionicons name='md-remove-circle' size={64} color={config.color.red} style={styles.iconRemove}
                                     onPress={() => this.delWord()} />
-                                <Text adjustsFontSizeToFit={true} style={[globalStyle.textWordCard, styles.textRemove]}>{item}</Text>
+                                <Text adjustsFontSizeToFit={true} style={[globalStyle.textWordCard, styles.textRemove]}>{item.text}</Text>
                             </View>)
-                                : <Text adjustsFontSizeToFit={true} style={globalStyle.textWordCard}>{item}</Text>
+                                : <Text adjustsFontSizeToFit={true} style={globalStyle.textWordCard}>{item.text}</Text>
                         }
                     </TouchableOpacity>
                 </Card>
@@ -114,7 +114,7 @@ export default class EditLesson extends Component {
             return (
                 <View style={styles.container}>
                     {listData}
-                    {floatingButton}
+                    {/* {floatingButton} */}
                 </View>
             );
         }

@@ -9,48 +9,16 @@ import { FloatingAction } from 'react-native-floating-action';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import { iconsMap } from '../../utils/appIcon';
+import RealmManager from '../../realm/realm';
 
 const { width, hight } = Dimensions.get('window');
-
-const listDataFaker = [
-    {
-        icon: require('../../img/family.png'),
-        topic: 'Family',
-        words: [
-            'Daddy', 'Mommy', 'Kitty'
-        ],
-        time: new Date().getTime()
-    },
-    {
-        icon: require('../../img/animal.png'),
-        topic: 'Animal',
-        words: [
-            'Lion', 'Chicken', 'Cat'
-        ],
-        time: new Date().getTime()
-    },
-    {
-        icon: require('../../img/vehicle.png'),
-        topic: 'Vehicle',
-        words: [
-            'Car', 'Train', 'Bicycle'
-        ],
-        time: new Date().getTime()
-    },
-    {
-        icon: require('../../img/fruit.png'),
-        topic: 'Fruit',
-        words: [
-            'Apple', 'Banana', 'Lemon', 'Pear', 'Bean', 'Tomato', 'Water Lemon', 'strawberry', 'coconut', 'cucumber'
-        ],
-        time: new Date().getTime()
-    }
-]
 
 export default class Lesson extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            listData: []
+        };
         this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     }
 
@@ -74,6 +42,11 @@ export default class Lesson extends Component {
         }
     }
 
+    componentWillMount() {
+        RealmManager.getAllTopic().then(topics => this.setState({ listData: topics }))
+        .catch(err => console.log(err))
+    }
+
     deleteUnit() {
         console.log('deleted');
     }
@@ -81,7 +54,7 @@ export default class Lesson extends Component {
     editUnit(rowData) {
         this.props.navigator.push({
             screen: 'kids.EditLesson',
-            title: rowData ? moment(new Date(rowData.time)).format('DD MMM YYYY HH:mm:ss') : 'Edit Lesson',
+            title: rowData ? moment(new Date(parseInt(rowData.time))).format('DD MMM YYYY HH:mm') : 'Edit Lesson',
             navigatorStyle: globalStyle.navigatorStyle,
             navigatorButtons: {
                 rightButtons: [
@@ -125,9 +98,9 @@ export default class Lesson extends Component {
         if (rowData && rowData.words) {
             rowData.words.map((e, i) => {
                 if (i === rowData.words.length - 1) {
-                    words += `${e}`
+                    words += `${e.text}`
                 } else {
-                    words += `${e}, `;
+                    words += `${e.text}, `;
                 }
                 if (i > 8) {
                     words += `...`;
@@ -135,6 +108,7 @@ export default class Lesson extends Component {
                 }
             })
         }
+        let date = String(new Date(parseInt(rowData.time)));
         return (
             <View key={index} style={styles.rowContainer}>
                 <Card>
@@ -145,11 +119,11 @@ export default class Lesson extends Component {
                         <TouchableOpacity style={{ width: '100%', height: '100%', justifyContent: 'center' }}
                             onPress={() => this.showUnitDetail(rowData.words)}>
                             <View style={styles.rowContent}>
-                                <Image style={{ width: 64, height: 64 }} source={rowData.icon} />
+                                <Image style={{ width: 64, height: 64 }} source={require('../../img/chat.png')} />
                                 <View style={styles.rightContent}>
                                     <View style={{ width: '100%', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text numberOfLines={1} style={[globalStyle.textMainMedium, { flex: 1 }]}> {rowData.topic} </Text>
-                                        <Text numberOfLines={1} style={[globalStyle.textSubLight, { flex: 2, textAlign: 'right' }]}> {moment(new Date(rowData.time)).format('DD MMM YYYY HH:mm:ss')} </Text>
+                                        <Text numberOfLines={1} style={[globalStyle.textMainMedium, { flex: 1 }]}> {rowData.title} </Text>
+                                        <Text numberOfLines={1} style={[globalStyle.textSubLight, { flex: 2, textAlign: 'right' }]}> {moment(date).format('DD MMM YYYY HH:mm')} </Text>
                                     </View>
                                     <Text numberOfLines={2} style={globalStyle.textMain}> {words} </Text>
                                 </View>
@@ -174,7 +148,7 @@ export default class Lesson extends Component {
             <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
                 <ScrollView contentContainerStyle={{ flex: 1, marginTop: 56 }}>
                     {
-                        listDataFaker.map((e, i) => {
+                        this.state.listData.map((e, i) => {
                             return this.renderRow(e, i);
                         })
                     }

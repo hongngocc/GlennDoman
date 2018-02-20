@@ -5,6 +5,7 @@ import config from '../../../config';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white',
         paddingHorizontal: config.paddingSize,
         paddingVertical: config.paddingSize
     },

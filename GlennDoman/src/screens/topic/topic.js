@@ -16,10 +16,11 @@ import Modal from 'react-native-modal';
 import Swipeout from 'react-native-swipeout';
 import { Card } from 'native-base';
 import globalStyle from '../../globalStyle';
-import RealmManager from '../../realm/realm';
+import RealmManager, { convertToJsonObj } from '../../realm/realm';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import config from '../../config';
+const SCREEN_TITLE = 'topic';
 
 export default class Topic extends Component {
     constructor(props) {
@@ -29,27 +30,70 @@ export default class Topic extends Component {
             newTopic: '',
             listTopic: []
         }
+        this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     }
 
-    componentDidMount() {
-        RealmManager.loadTopicByName('Animals');
-        this.loadData()
+    onNavigatorEvent(event) {
+        if (event.type === 'NavBarButtonPress') {
+            switch (event.id) {
+            }
+        } else {
+            switch (event.id) {
+                case 'willAppear':
+                    this.loadData();
+                    break;
+                case 'didAppear':
+                    break;
+                case 'willDisappear':
+                    break;
+                case 'didDisappear':
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
-    componentWillUnmount() {
-        RealmManager.unregisterChange()
+    componentWillMount() {
+        this.loadData();
     }
 
     loadData() {
-        let topics = RealmManager.getAllTopic();
-        let _listTopic = [];
-        topics.then(proxy => {
-            proxy.forEach(topicRealm => {
-                _listTopic.push(topicRealm)
-            })
-            this.setState({
-                listTopic: _listTopic
-            })
+        let topics = [];
+        RealmManager.getAllTopic().then(topics => this.setState({
+            listTopic: topics
+        }, () => this.getTopicInfo()));
+    }
+
+    // changeData(realm) {
+    //     let topics = [];
+    //     realm.objects('Topic').forEach(topicRealm => {
+    //         let topicJsonObj = convertToJsonObj(topicRealm, 'topic');
+    //         topics.push(topicJsonObj)
+    //     })
+    //     this.setState({
+    //         listTopic: topics
+    //     });
+    //     this.getTopicInfo();
+    // }
+
+    getTopicInfo() {
+        RealmManager.getAllTopic().then(topics => {
+            for (let index = 0; index < topics.length; index++) {
+                var topic = topics[index];
+                let totalWords = topic.words.length;
+                let completed = 0;
+                topic.words.forEach(word => {
+                    if (word.isComplete) {
+                        completed++;
+                    }
+                });
+                topics[index].completed = completed;
+                topics[index].totalWords = totalWords;
+                this.setState({
+                    listTopic: topics
+                })
+            }
         })
     }
 
@@ -76,12 +120,11 @@ export default class Topic extends Component {
         this.loadData()
     }
 
-    showDetails(element) {
-        let topicRealm = JSON.stringify(element);
+    showDetails(topic) {
         this.props.navigator.showModal({
             screen: 'kids.TopicDetails',
-            title: element.title,
-            passProps: {title: element.title, topicRealm: topicRealm},
+            title: topic.title,
+            passProps: { title: topic.title },
             animationType: 'none',
             navigatorStyle: globalStyle.navigatorStyle
         });
@@ -96,6 +139,11 @@ export default class Topic extends Component {
                         <View style={{ flexDirection: 'row', justifyContent: 'center', flex: 1 }}>
                             <Text style={[globalStyle.textMain, { color: config.color.mainColor }]}>{element.title}</Text>
                         </View>
+                        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+                            <Text>{element.completed ? element.completed : '0'}</Text>
+                            <Text> / </Text>
+                            <Text>{element.totalWords ? element.totalWords : '0'}</Text>
+                        </View>
                         <Image style={{ width: 64, height: 64, alignSelf: 'center' }} source={require('../../img/animal.png')} />
                     </Card>
                 </View>
@@ -105,14 +153,14 @@ export default class Topic extends Component {
 
     renderModal() {
         return (
-            <Modal backdropColor= 'black'
+            <Modal backdropColor='black'
                 onBackButtonPress={() => this.closeModal()}
                 onBackdropPress={() => this.closeModal()} backdropOpacity={0.5} visible={this.state.visibleModal}>
                 <View style={styles.modal}>
                     <View style={{ flex: 6, padding: 16, justifyContent: 'space-between' }}>
                         <Text style={{ fontSize: 20, alignSelf: 'center', marginBottom: 10, color: config.color.mainColor }}>New Topic</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ width: '20%' }}>Title: </Text>
+                            <Text style={[globalStyle.textMain, { width: '20%' }]}>Title: </Text>
                             <TextInput style={{ width: 200 }} placeholder='Input Topic Title'
                                 underlineColorAndroid='#d34836'
                                 onChangeText={(text) => this.setState({
@@ -120,7 +168,7 @@ export default class Topic extends Component {
                                 })}
                             ></TextInput>
                         </View>
-                        <Text>Icon: </Text>
+                        <Text style={globalStyle.textMain}>Icon: </Text>
                         <View style={{ marginTop: 10, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: config.color.mainColor }}></View>
                     </View>
                     <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
