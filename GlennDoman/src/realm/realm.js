@@ -90,7 +90,7 @@ export default RealmManager = {
                         wordObjRealm = value;
                     })
 
-                    wordObjRealm.isComplete = !wordObjRealm.isComplete
+                    wordObjRealm.isComplete = true;
 
                     realm.create('Word', wordObjRealm, true);
                 })
@@ -127,7 +127,7 @@ export default RealmManager = {
     getAllLesson: () => Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
         .then(realm => {
             let lessons = [];
-            realm.objects('Lesson').forEach(lessonRealm => {
+            realm.objects('Lesson').filtered(`isComplete = false`).forEach(lessonRealm => {
                 let lessonObj = convertToJsonObj(lessonRealm, 'lesson');
                 lessons.push(lessonObj)
             })

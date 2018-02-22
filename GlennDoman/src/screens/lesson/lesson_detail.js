@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import styles from './style/lesson.detail';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,6 +9,8 @@ import { FloatingAction } from 'react-native-floating-action';
 import { Image } from 'react-native-animatable';
 import Tts from 'react-native-tts';
 import RealmManager from '../../realm/realm';
+
+const { width, height } = Dimensions.get('window');
 
 export default class LessonDetail extends Component {
     constructor(props) {
@@ -39,9 +41,7 @@ export default class LessonDetail extends Component {
     dissmissCurrentModal() {
         this.setState({ visibleText: true })
         this.isCompletedLesson()
-        setTimeout(() => this.props.navigator.dismissModal({
-            animationType: 'slide-down'
-        }), 1000);
+        setTimeout(() => this.props.navigator.pop(), 1000);
     }
 
     swipeLeft() {
@@ -100,7 +100,7 @@ export default class LessonDetail extends Component {
     render() {
 
         return (
-            <View style={{ flex: 1, backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
                 <Swiper
                     ref='swiper'
                     // goBackToPreviousCardOnSwipeLeft={true}
@@ -149,7 +149,7 @@ export default class LessonDetail extends Component {
                 </Swiper>
                 {
                     this.state.visibleText ?
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ color: 'white', fontSize: 32, marginBottom: 16 }}>Well done ^^</Text>
                             <Image style={{ width: 100, height: 100 }} source={require('../../img/stars.png')}></Image>
                         </View> : null
