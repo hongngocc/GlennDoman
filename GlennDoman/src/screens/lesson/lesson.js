@@ -69,11 +69,12 @@ export default class Lesson extends Component {
         })
     }
 
-    showUnitDetail(listWord) {
+    showUnitDetail(listWord, lesson) {
         this.props.navigator.showModal({
             screen: "kids.LessonDetail",
             passProps: {
-                listWord: listWord || []
+                listWord: listWord || [],
+                lesson: lesson
             },
             navigatorStyle: globalStyle.navigatorNoHeaderStyle,
             animationType: 'slide-up'
@@ -117,7 +118,7 @@ export default class Lesson extends Component {
                         autoClose={true}
                         backgroundColor='transparent'>
                         <TouchableOpacity style={{ width: '100%', height: '100%', justifyContent: 'center' }}
-                            onPress={() => this.showUnitDetail(rowData.words)}>
+                            onPress={() => this.showUnitDetail(rowData.words, rowData)}>
                             <View style={styles.rowContent}>
                                 <Image style={{ width: 64, height: 64 }} source={require('../../img/chat.png')} />
                                 <View style={styles.rightContent}>

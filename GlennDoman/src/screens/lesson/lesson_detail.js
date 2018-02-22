@@ -8,6 +8,7 @@ import globalStyle from '../../globalStyle';
 import { FloatingAction } from 'react-native-floating-action';
 import { Image } from 'react-native-animatable';
 import Tts from 'react-native-tts';
+import RealmManager from '../../realm/realm';
 
 export default class LessonDetail extends Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export default class LessonDetail extends Component {
     }
 
     componentWillMount() {
-        let {listWord} = this.props;
+        let { listWord } = this.props;
         let _listWord = this.state.listWord;
         listWord.forEach(element => {
             _listWord.push(element.text);
@@ -37,6 +38,7 @@ export default class LessonDetail extends Component {
 
     dissmissCurrentModal() {
         this.setState({ visibleText: true })
+        this.isCompletedLesson()
         setTimeout(() => this.props.navigator.dismissModal({
             animationType: 'slide-down'
         }), 1000);
@@ -82,16 +84,21 @@ export default class LessonDetail extends Component {
     }
 
     onSwiped(cardIndex) {
+        RealmManager.toggleCompleteState(this.props.listWord[cardIndex].text);
         let index = cardIndex + 1;
         this.setState({ curWord: this.props.listWord[index] });
     }
 
     isCompletedLesson() {
-        let lessonObj = Rea
+        let _lesson = convertToJsonObj(this.props.lesson, 'lesson');
+        let timeCompleted = new Date().getTime().toString();
+        _lesson.timeCompleted = timeCompleted;
+        _lesson.isComplete = true;
+        RealmManager.updateLesson(_lesson);
     }
 
     render() {
-        
+
         return (
             <View style={{ flex: 1, backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
                 <Swiper
@@ -142,12 +149,50 @@ export default class LessonDetail extends Component {
                 </Swiper>
                 {
                     this.state.visibleText ?
-                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: 'white', fontSize: 32, marginBottom: 16}}>Well done ^^</Text>
-                        <Image style={{width: 100, height: 100}} source={require('../../img/stars.png')}></Image>
-                    </View> : null
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: 'white', fontSize: 32, marginBottom: 16 }}>Well done ^^</Text>
+                            <Image style={{ width: 100, height: 100 }} source={require('../../img/stars.png')}></Image>
+                        </View> : null
                 }
             </View>
         );
+    }
+}
+
+function convertToJsonObj(realmObj, type) {
+    switch (type) {
+        case 'topic':
+            let topicJsonObj = {};
+            topicJsonObj.title = realmObj.title;
+            topicJsonObj.words = [];
+            topicJsonObj.icon = realmObj.icon;
+            topicJsonObj.time = realmObj.time;
+
+            realmObj.words.forEach(wordRealm => {
+                let wordObj = {};
+                wordObj.text = wordRealm.text;
+                wordObj.isComplete = wordRealm.isComplete;
+                wordObj.path = wordRealm.path;
+
+                topicJsonObj.words.push(wordObj)
+            })
+            return topicJsonObj;
+        case 'lesson':
+            let lessonObj = {};
+            lessonObj.description = realmObj.description;
+            lessonObj.words = [];
+            lessonObj.time = realmObj.time;
+            lessonObj.timeCompleted = realmObj.timeCompleted;
+            lessonObj.isComplete = realmObj.isComplete
+
+            realmObj.words.forEach(wordRealm => {
+                let wordObj = {};
+                wordObj.text = wordRealm.text;
+                wordObj.isComplete = wordRealm.isComplete;
+                wordObj.path = wordRealm.path;
+
+                lessonObj.words.push(wordObj)
+            })
+            return lessonObj;
     }
 }

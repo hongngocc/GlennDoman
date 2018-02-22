@@ -21,6 +21,7 @@ export const wordSchema = {
 
 export const lessonSchema = {
     name: 'Lesson',
+    primaryKey: 'description',
     properties: {
         description: 'string',
         words: {type: 'list', objectType: 'Word'},
