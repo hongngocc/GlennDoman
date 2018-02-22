@@ -29,6 +29,10 @@ export default class Lesson extends Component {
         } else {
             switch (event.id) {
                 case 'willAppear':
+                RealmManager.getAllLesson().then(lessons => {
+                    this.setState({ listData: lessons })
+                })
+                .catch(err => console.log(err))
                     break;
                 case 'didAppear':
                     break;
@@ -40,11 +44,6 @@ export default class Lesson extends Component {
                     break;
             }
         }
-    }
-
-    componentWillMount() {
-        RealmManager.getAllLesson().then(lesson => this.setState({ listData: lesson }))
-        .catch(err => console.log(err))
     }
 
     deleteUnit() {

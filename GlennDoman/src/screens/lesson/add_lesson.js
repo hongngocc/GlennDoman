@@ -51,6 +51,7 @@ export default class AddLesson extends Component {
             switch (event.id) {
                 case 'add_lesson':
                     RealmManager.createLesson('aihihi', this.words, new Date().getTime().toString());
+                    this.props.navigator.pop();
                     break;
             }
         } else {
@@ -260,7 +261,6 @@ export default class AddLesson extends Component {
                                 visibleModal: false,
                                 words: this.words
                             })
-                            // console.log(this.state.words)
                         }}>
                             <Text>OK</Text>
                         </TouchableOpacity>
