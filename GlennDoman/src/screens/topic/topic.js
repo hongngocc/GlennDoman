@@ -65,18 +65,6 @@ export default class Topic extends Component {
         }, () => this.getTopicInfo()));
     }
 
-    // changeData(realm) {
-    //     let topics = [];
-    //     realm.objects('Topic').forEach(topicRealm => {
-    //         let topicJsonObj = convertToJsonObj(topicRealm, 'topic');
-    //         topics.push(topicJsonObj)
-    //     })
-    //     this.setState({
-    //         listTopic: topics
-    //     });
-    //     this.getTopicInfo();
-    // }
-
     getTopicInfo() {
         RealmManager.getAllTopic().then(topics => {
             for (let index = 0; index < topics.length; index++) {

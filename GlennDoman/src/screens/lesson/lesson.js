@@ -29,6 +29,10 @@ export default class Lesson extends Component {
         } else {
             switch (event.id) {
                 case 'willAppear':
+                    RealmManager.getAllLesson().then(lessons => {
+                        this.setState({ listData: lessons })
+                    })
+                        .catch(err => console.log(err))
                     break;
                 case 'didAppear':
                     break;
@@ -40,11 +44,6 @@ export default class Lesson extends Component {
                     break;
             }
         }
-    }
-
-    componentWillMount() {
-        RealmManager.getAllLesson().then(lesson => this.setState({ listData: lesson }))
-        .catch(err => console.log(err))
     }
 
     deleteUnit() {
@@ -70,13 +69,15 @@ export default class Lesson extends Component {
         })
     }
 
-    showUnitDetail(listWord) {
-        this.props.navigator.showModal({
+    showUnitDetail(listWord, lesson) {
+        this.props.navigator.push({
             screen: "kids.LessonDetail",
+            title: 'Choose difference lesson',
             passProps: {
-                listWord: listWord || []
+                listWord: listWord || [],
+                lesson: lesson
             },
-            navigatorStyle: globalStyle.navigatorNoHeaderStyle,
+            navigatorStyle: globalStyle.navigatorNoTabStyle,
             animationType: 'slide-up'
         });
     }
@@ -118,7 +119,7 @@ export default class Lesson extends Component {
                         autoClose={true}
                         backgroundColor='transparent'>
                         <TouchableOpacity style={{ width: '100%', height: '100%', justifyContent: 'center' }}
-                            onPress={() => this.showUnitDetail(rowData.words)}>
+                            onPress={() => this.showUnitDetail(rowData.words, rowData)}>
                             <View style={styles.rowContent}>
                                 <Image style={{ width: 64, height: 64 }} source={require('../../img/chat.png')} />
                                 <View style={styles.rightContent}>
@@ -154,8 +155,8 @@ export default class Lesson extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-                <ScrollView contentContainerStyle={{ flex: 1, marginTop: 56 }}>
+            <View style={{ flex: 1, backgroundColor: '#FFFFFF', marginTop: 56 }}>
+                <ScrollView style={{ flex: 1 }}>
                     {
                         this.state.listData.map((e, i) => {
                             return this.renderRow(e, i);

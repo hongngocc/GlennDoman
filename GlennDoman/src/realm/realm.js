@@ -38,7 +38,7 @@ export default RealmManager = {
     },
 
     deleleWord: function (text) {
-        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+        Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
             .then(realm => {
                 realm.write(() => {
                     realm.objects('Word').filtered(`text = "${text}"`).forEach(word => {
@@ -48,13 +48,6 @@ export default RealmManager = {
                 realm.close();
             })
             .catch(err => { console.log('Can not delete Word by error: ', err); })
-    },
-
-    unregisterChange: function () {
-        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
-            .then(realm => {
-                realm.removeListener('change')
-            });
     },
 
     loadTopicByName: (topicName) =>
@@ -87,31 +80,22 @@ export default RealmManager = {
             })
             .catch(err => ToastAndroid.show('Can not create', ToastAndroid.SHORT, ToastAndroid.BOTTOM)),
 
-    register: (tag, callback) => Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
-        .then(realm => {
-            realm.addListener(tag, callback);
-        })
-        .catch(err => { }),
-
-    unregister: (tag, callback) => Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
-        .then(realm => {
-            realm.removeListener(tag, callback);
-        })
-        .catch(err => { }),
-
-    toggleCompleteState: (text) => {
-        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
+    toggleCompleteState: (words) => {
+        Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
             .then(realm => {
                 realm.write(() => {
-                    let word = realm.objects('Word').filtered(`text = "${text}"`);
-                    let wordObjRealm = {};
-                    word.forEach(value => {
-                        wordObjRealm = value;
-                    })
+                    for (let i = 0; i < words.length; i++) {
+                        const text = words[i].text;
+                        let word = realm.objects('Word').filtered(`text = "${text}"`);
+                        let wordObjRealm = {};
+                        word.forEach(value => {
+                            wordObjRealm = value;
+                        })
 
-                    wordObjRealm.isComplete = !wordObjRealm.isComplete
+                        wordObjRealm.isComplete = true;
 
-                    realm.create('Word', wordObjRealm, true);
+                        realm.create('Word', wordObjRealm, true);
+                    }
                 })
                 realm.close();
             })
@@ -143,16 +127,36 @@ export default RealmManager = {
             })
     },
 
-    getAllLesson: () => Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+    getAllLesson: (isHistory = false) => Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
         .then(realm => {
             let lessons = [];
-            realm.objects('Lesson').forEach(lessonRealm => {
+            realm.objects('Lesson').filtered(`isComplete = ${isHistory}`).forEach(lessonRealm => {
                 let lessonObj = convertToJsonObj(lessonRealm, 'lesson');
                 lessons.push(lessonObj)
             })
             realm.close();
+            console.log('getAllLesson', lessons)
             return lessons;
+        }),
+
+    updateLesson: (lessonObj) => {
+        let lessonRealm = new Realm({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+        lessonRealm.write(() => {
+            lessonRealm.create('Lesson', lessonObj, true)
         })
+    },
+
+    loadLessonByDescription: (description) =>
+        Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                let _lesson = realm.objects('Lesson').filtered(`description = "${description}"`);
+                let lessonObj = {};
+                _lesson.forEach(data => {
+                    lessonObj = convertToJsonObj(data, 'lesson');
+                })
+                realm.close();
+                return lessonObj;
+            })
 }
 
 export function convertToJsonObj(realmObj, type) {
