@@ -70,12 +70,13 @@ export default class Lesson extends Component {
     }
 
     showUnitDetail(listWord) {
-        this.props.navigator.showModal({
+        this.props.navigator.push({
             screen: "kids.LessonDetail",
+            title: 'Choose difference lesson',
             passProps: {
                 listWord: listWord || []
             },
-            navigatorStyle: globalStyle.navigatorNoHeaderStyle,
+            navigatorStyle: globalStyle.navigatorNoTabStyle,
             animationType: 'slide-up'
         });
     }

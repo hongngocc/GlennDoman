@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import styles from './style/lesson.detail';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,8 @@ import globalStyle from '../../globalStyle';
 import { FloatingAction } from 'react-native-floating-action';
 import { Image } from 'react-native-animatable';
 import Tts from 'react-native-tts';
+
+const { width, height } = Dimensions.get('window');
 
 export default class LessonDetail extends Component {
     constructor(props) {
@@ -24,7 +26,7 @@ export default class LessonDetail extends Component {
     }
 
     componentWillMount() {
-        let {listWord} = this.props;
+        let { listWord } = this.props;
         let _listWord = this.state.listWord;
         listWord.forEach(element => {
             _listWord.push(element.text);
@@ -91,9 +93,9 @@ export default class LessonDetail extends Component {
     }
 
     render() {
-        
+
         return (
-            <View style={{ flex: 1, backgroundColor: 'pink', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
                 <Swiper
                     ref='swiper'
                     // goBackToPreviousCardOnSwipeLeft={true}
@@ -142,10 +144,10 @@ export default class LessonDetail extends Component {
                 </Swiper>
                 {
                     this.state.visibleText ?
-                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: 'white', fontSize: 32, marginBottom: 16}}>Well done ^^</Text>
-                        <Image style={{width: 100, height: 100}} source={require('../../img/stars.png')}></Image>
-                    </View> : null
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: 'white', fontSize: 32, marginBottom: 16 }}>Well done ^^</Text>
+                            <Image style={{ width: 100, height: 100 }} source={require('../../img/stars.png')}></Image>
+                        </View> : null
                 }
             </View>
         );

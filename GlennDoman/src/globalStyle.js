@@ -54,6 +54,22 @@ export default {
         drawUnderTabBar: false,
         navBarTextFontBold: true
     },
+    navigatorNoTabStyle: {
+        statusBarColor: config.background.statusBar,
+        navBarBackgroundColor: config.background.navBar,
+        navBarTranslucent: false,
+        drawUnderNavBar: true,
+        navBarHideOnScroll: false,
+        tabBarHidden: true,
+        topBarElevationShadowEnabled: false,
+        navBarTextColor: config.color.navText,
+        navBarTextFontFamily: config.font.navFont,
+        navBarTextFontSize: config.font.navSize,
+        navBarButtonColor: config.background.navButton,
+        statusBarTextColorScheme: 'light',
+        drawUnderTabBar: false,
+        navBarTextFontBold: true
+    },
     navigatorNoHeaderStyle: {
         statusBarColor: config.background.statusBar,
         navBarHidden: true
