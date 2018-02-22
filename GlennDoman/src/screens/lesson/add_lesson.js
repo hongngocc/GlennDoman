@@ -11,11 +11,12 @@ import {
     FlatList,
     Dimensions,
     ScrollView,
-    ToastAndroid
+    ToastAndroid,
+    TextInput
 } from 'react-native';
 import { Card } from 'native-base';
 import Modal from 'react-native-modal';
-
+import moment from 'moment';
 import globalStyle from '../../globalStyle';
 import config from '../../config';
 import RealmManager from '../../realm/realm';
@@ -25,16 +26,15 @@ const widthItem = (Dimensions.get('window').width - 32) / 3
 
 export default class AddLesson extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        const curTime = new Date();
+        this.curYear = curTime.getFullYear();
+        this.curMonth = curTime.getMonth();
+        this.curDate = curTime.getDate();
         this.state = {
             topics: null,
-            time: {
-                hour: 7,
-                minute: 0,
-                day: new Date().getDate(),
-                month: new Date().getMonth(),
-                year: new Date().getFullYear()
-            },
+            description: '',
+            time: new Date(),
             selectedNumber: 5,
             words: [],
             visibleModal: false,
@@ -50,7 +50,7 @@ export default class AddLesson extends Component {
         if (event.type === 'NavBarButtonPress') {
             switch (event.id) {
                 case 'add_lesson':
-                    RealmManager.createLesson('aihihi', this.words, new Date().getTime().toString());
+                    RealmManager.createLesson(this.state.description, this.words, this.state.time);
                     this.props.navigator.pop();
                     break;
             }
@@ -89,12 +89,15 @@ export default class AddLesson extends Component {
     async openTimePicker() {
         try {
             const { action, hour, minute } = await TimePickerAndroid.open({
-                hour: this.state.time.hour,
-                minute: this.state.time.minute,
+                hour: this.state.time.getHours() || new Date().getHours(),
+                minute: this.state.time.getMinutes() | new Date().getMinutes(),
                 is24Hour: false, // Will display '2 PM'
             });
             if (action !== TimePickerAndroid.dismissedAction) {
                 // Selected hour (0-23), minute (0-59)
+                this.setState({
+                    time: new Date(this.curYear, this.curMonth, this.curDate, hour, minute)
+                })
             }
         } catch ({ code, message }) {
             console.warn('Cannot open time picker', message);
@@ -103,14 +106,19 @@ export default class AddLesson extends Component {
 
     async openDatePicker() {
         try {
+            const hour = this.state.time.getHours() || new Date().getHours();
+            const minute = this.state.time.getMinutes() || new Date().getMinutes();
             const { action, year, month, day } = await DatePickerAndroid.open({
                 // Use `new Date()` for current date.
                 // May 25 2020. Month 0 is January.
-                date: new Date(),
+                date: this.state.time,
                 //   mode: 'spinner'
             });
             if (action !== DatePickerAndroid.dismissedAction) {
                 // Selected year, month (0-11), day
+                this.setState({
+                    time: new Date(year, month, day, hour, minute)
+                })
             }
         } catch ({ code, message }) {
             console.warn('Cannot open date picker', message);
@@ -272,40 +280,54 @@ export default class AddLesson extends Component {
             </Modal>
         )
     }
+
+    onChangeText(value) {
+        this.setState({ description: value });
+    }
+
     render() {
         return (
             <View style={{ flex: 1, paddingTop: 5, marginTop: Platform.OS === 'ios' ? 0 : 56, backgroundColor: 'white' }}>
                 <View style={{ height: 225 }}>
                     <Card style={{ padding: 10 }}>
-                        <View style={{ paddingBottom: 32 }}>
+                        <View style={{ flex: 1 }}>
                             <Text style={[globalStyle.textMain, { textAlign: 'center' }]}>About</Text>
-                            {
+                            {/*
                                 this.state.topics ?
                                     <Text style={[globalStyle.textMain, { textAlign: 'center' }]}>{this.state.topics}</Text> : null
-                            }
+                            */}
                         </View>
-                        <View style={{ flexDirection: 'row', marginBottom: 16 }}>
-                            <Text style={[globalStyle.textSubLight, { width: '30%' }]}>Set Time: </Text>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+                            <View style={{ width: '30%', flexDirection: 'row' }}>
+                                <Text style={[globalStyle.textSubLight, { flex: 85 }]}>Set Time</Text>
+                                <Text style={[globalStyle.textSubLight, { flex: 15 }]}>:</Text>
+                            </View>
                             <TouchableOpacity onPress={() => this.openTimePicker()}
-                                style={{ width: '70%', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 32 }}>
-                                <Text style={globalStyle.textSubLight}>{`07:00`}</Text>
+                                style={{ width: '70%', flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 16 }}>
+                                <Text style={globalStyle.textSubLight}>{moment(this.state.time).format('HH:mm')}</Text>
                                 <Image style={{ width: 24, height: 24 }} source={require('../../img/clock.png')}></Image>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={[globalStyle.textSubLight, { width: '30%' }]}>Set Date: </Text>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+                            <View style={{ width: '30%', flexDirection: 'row' }}>
+                                <Text style={[globalStyle.textSubLight, { flex: 85 }]}>Set Date </Text>
+                                <Text style={[globalStyle.textSubLight, { flex: 15 }]}>:</Text>
+                            </View>
                             <TouchableOpacity onPress={() => this.openDatePicker()}
-                                style={{ width: '70%', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 32 }}>
-                                <Text style={globalStyle.textSubLight}>{this.convertDateToString()}</Text>
+                                style={{ width: '70%', flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 16 }}>
+                                <Text style={globalStyle.textSubLight}>{moment(this.state.time).format('DD MMM YYYY')}</Text>
                                 <Image style={{ width: 24, height: 24 }} source={require('../../img/calendar.png')}></Image>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row', marginBottom: 16, alignItems: 'center' }}>
-                            <Text style={[globalStyle.textSubLight, { width: '30%' }]}>Numbers: </Text>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+                            <View style={{ width: '30%', flexDirection: 'row' }}>
+                                <Text style={[globalStyle.textSubLight, { flex: 85 }]}>Numbers </Text>
+                                <Text style={[globalStyle.textSubLight, { flex: 15 }]}>:</Text>
+                            </View>
                             <Picker onValueChange={(value) => this.setState({
                                 selectedNumber: value
                             })}
-                                style={{ width: 100, marginLeft: 32 }} selectedValue={this.state.selectedNumber}>
+                                style={{ width: 100, marginLeft: 8 }} selectedValue={this.state.selectedNumber}>
                                 {
                                     NUMBERS_LIST.map((e, i) =>
                                         <Picker.Item label={`${e}`} value={`${e}`}></Picker.Item>
@@ -313,17 +335,30 @@ export default class AddLesson extends Component {
                                 }
                             </Picker>
                         </View>
+                        <View style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 16, alignItems: 'center' }}>
+                            <View style={{ width: '30%', flexDirection: 'row' }}>
+                                <Text style={[globalStyle.textSubLight, { flex: 85 }]}>Description </Text>
+                                <Text style={[globalStyle.textSubLight, { flex: 15 }]}>:</Text>
+                            </View>
+                            <TextInput
+                                style={[globalStyle.textSubLight, { width: '70%', marginLeft: 12, paddingLeft: 4, borderWidth: 1, borderColor: '#00000070' }]}
+                                value={this.state.description}
+                                underlineColorAndroid={'transparent'}
+                                onChangeText={(text) => this.onChangeText()}
+                                numberOfLines={1}
+                            />
+                        </View>
                     </Card>
                 </View>
                 <Card style={{ padding: 10 }}>
                     <Text style={[globalStyle.textMain, { textAlign: 'center', marginBottom: 10 }]}>Words</Text>
                     <FlatList extraData={this.state}
-                    data={this.state.words} numColumns={3}
+                        data={this.state.words} numColumns={3}
                         renderItem={({ item }) =>
-                        <View style={{ width: widthItem, alignItems: 'center', padding: 7}}>
-                            <Text>{`${item}`}</Text>
-                        </View>
-                       }>
+                            <View style={{ width: widthItem, alignItems: 'center', padding: 7 }}>
+                                <Text>{`${item}`}</Text>
+                            </View>
+                        }>
                     </FlatList>
                     <TouchableOpacity onPress={() => this.showModal()}
                         style={{ width: 28, height: 28, alignSelf: 'center' }}>

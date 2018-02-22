@@ -29,10 +29,10 @@ export default class Lesson extends Component {
         } else {
             switch (event.id) {
                 case 'willAppear':
-                RealmManager.getAllLesson().then(lessons => {
-                    this.setState({ listData: lessons })
-                })
-                .catch(err => console.log(err))
+                    RealmManager.getAllLesson().then(lessons => {
+                        this.setState({ listData: lessons })
+                    })
+                        .catch(err => console.log(err))
                     break;
                 case 'didAppear':
                     break;
@@ -153,8 +153,8 @@ export default class Lesson extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-                <ScrollView contentContainerStyle={{ flex: 1, marginTop: 56 }}>
+            <View style={{ flex: 1, backgroundColor: '#FFFFFF', marginTop: 56 }}>
+                <ScrollView style={{ flex: 1 }}>
                     {
                         this.state.listData.map((e, i) => {
                             return this.renderRow(e, i);
