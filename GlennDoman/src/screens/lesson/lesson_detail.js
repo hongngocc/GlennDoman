@@ -86,6 +86,10 @@ export default class LessonDetail extends Component {
         this.setState({ curWord: this.props.listWord[index] });
     }
 
+    isCompletedLesson() {
+        let lessonObj = Rea
+    }
+
     render() {
         
         return (

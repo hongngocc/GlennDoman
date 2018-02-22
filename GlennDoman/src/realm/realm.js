@@ -50,13 +50,6 @@ export default RealmManager = {
             .catch(err => { console.log('Can not delete Word by error: ', err); })
     },
 
-    unregisterChange: function () {
-        Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
-            .then(realm => {
-                realm.removeListener('change')
-            });
-    },
-
     loadTopicByName: (topicName) =>
         Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
             .then(realm => {
@@ -86,18 +79,6 @@ export default RealmManager = {
                 realm.close();
             })
             .catch(err => ToastAndroid.show('Can not create', ToastAndroid.SHORT, ToastAndroid.BOTTOM)),
-
-    register: (tag, callback) => Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
-        .then(realm => {
-            realm.addListener(tag, callback);
-        })
-        .catch(err => { }),
-
-    unregister: (tag, callback) => Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
-        .then(realm => {
-            realm.removeListener(tag, callback);
-        })
-        .catch(err => { }),
 
     toggleCompleteState: (text) => {
         Realm.open({ schema: [schema.wordSchema, schema.topicSchema] })
@@ -152,7 +133,23 @@ export default RealmManager = {
             })
             realm.close();
             return lessons;
+        }),
+
+    updateLesson: (lessonObj) => Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+    .then(realm => {
+        realm.write(() => {
+            realm.create('Lesson', lessonObj, true)
         })
+
+        realm.close();
+    }),
+
+    loadLessonByDescription: (description) => Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+    .then(realm => {
+        realm.objects('Lesson').filtered(`description = "${description}"`).forEach(lesson => {
+            
+        })
+    })
 }
 
 export function convertToJsonObj(realmObj, type) {
