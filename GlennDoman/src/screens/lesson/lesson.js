@@ -43,7 +43,7 @@ export default class Lesson extends Component {
     }
 
     componentWillMount() {
-        RealmManager.getAllTopic().then(topics => this.setState({ listData: topics }))
+        RealmManager.getAllLesson().then(lesson => this.setState({ listData: lesson }))
         .catch(err => console.log(err))
     }
 
@@ -82,6 +82,7 @@ export default class Lesson extends Component {
     }
 
     renderRow(rowData, index) {
+
         let swipeBtns = [
             {
                 text: 'Edit',
@@ -122,7 +123,7 @@ export default class Lesson extends Component {
                                 <Image style={{ width: 64, height: 64 }} source={require('../../img/chat.png')} />
                                 <View style={styles.rightContent}>
                                     <View style={{ width: '100%', flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text numberOfLines={1} style={[globalStyle.textMainMedium, { flex: 1 }]}> {rowData.title} </Text>
+                                        <Text numberOfLines={1} style={[globalStyle.textMainMedium, { flex: 1 }]}> {rowData.description} </Text>
                                         <Text numberOfLines={1} style={[globalStyle.textSubLight, { flex: 2, textAlign: 'right' }]}> {moment(date).format('DD MMM YYYY HH:mm')} </Text>
                                     </View>
                                     <Text numberOfLines={2} style={globalStyle.textMain}> {words} </Text>
@@ -139,7 +140,15 @@ export default class Lesson extends Component {
         this.props.navigator.push({
             screen: 'kids.AddLesson',
             title: 'Add Lesson',
-            navigatorStyle: globalStyle.navigatorStyle
+            navigatorStyle: globalStyle.navigatorStyle,
+            navigatorButtons: {
+                rightButtons: [
+                    {
+                        id: 'add_lesson',
+                        icon: iconsMap['md-checkmark']
+                    }
+                ]
+            },
         })
     }
 

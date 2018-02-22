@@ -1,5 +1,3 @@
-import React from 'react';
-import { ToastAndroid } from 'react-native';
 import Realm from 'realm';
 
 import * as schema from './schema/schema';
@@ -12,6 +10,7 @@ export default RealmManager = {
                 let topicJsonObj = convertToJsonObj(topicRealm, 'topic');
                 topics.push(topicJsonObj)
             })
+            realm.close();
             return topics;
         })
         .catch(err => console.log('Can not get by error: ', err)),
@@ -22,6 +21,7 @@ export default RealmManager = {
                 realm.write(() => {
                     realm.create('Topic', topicObj, isUpdate);
                 })
+                realm.close();
             })
             .catch(err => console.log('Can not create by error: ', err))
     },
@@ -32,6 +32,7 @@ export default RealmManager = {
                 realm.write(() => {
                     realm.delete(topicObj);
                 })
+                realm.close();
             })
             .catch(err => console.log('Can not delete Topic by error: ', err))
     },
@@ -44,6 +45,7 @@ export default RealmManager = {
                         realm.delete(word);
                     })
                 })
+                realm.close();
             })
             .catch(err => { console.log('Can not delete Word by error: ', err); })
     },
@@ -61,9 +63,9 @@ export default RealmManager = {
                 let choosedTopic = realm.objects('Topic').filtered(`title = "${topicName}"`);
                 let topicObj = {};
                 choosedTopic.forEach(data => {
-                    topicObj =  convertToJsonObj(data, 'topic');
+                    topicObj = convertToJsonObj(data, 'topic');
                 })
-
+                realm.close();
                 return topicObj;
             }),
 
@@ -81,6 +83,7 @@ export default RealmManager = {
                     topicRealmObj.words.push(newWord);
                     realm.create('Topic', topicRealmObj, isUpdate);
                 })
+                realm.close();
             })
             .catch(err => ToastAndroid.show('Can not create', ToastAndroid.SHORT, ToastAndroid.BOTTOM)),
 
@@ -110,8 +113,46 @@ export default RealmManager = {
 
                     realm.create('Word', wordObjRealm, true);
                 })
+                realm.close();
             })
-    }
+    },
+
+    createLesson: (description, words, time) => {
+        Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+            .then(realm => {
+                realm.write(() => {
+                    let listWord = [];
+                    words.forEach(word => {
+                        realm.objects('Word').filtered(`text = "${word}"`).forEach(_word => {
+                            listWord.push(_word);
+                        });
+                    });
+
+                    let less = realm.create('Lesson', {
+                        description: description,
+                        words: listWord,
+                        time: time,
+                        timeCompleted: '',
+                        isComplete: false
+                    })
+
+                    console.log(less)
+                });
+
+                realm.close();
+            })
+    },
+
+    getAllLesson: () => Realm.open({ schema: [schema.lessonSchema, schema.wordSchema, schema.topicSchema] })
+        .then(realm => {
+            let lessons = [];
+            realm.objects('Lesson').forEach(lessonRealm => {
+                let lessonObj = convertToJsonObj(lessonRealm, 'lesson');
+                lessons.push(lessonObj)
+            })
+            realm.close();
+            return lessons;
+        })
 }
 
 export function convertToJsonObj(realmObj, type) {
@@ -132,5 +173,22 @@ export function convertToJsonObj(realmObj, type) {
                 topicJsonObj.words.push(wordObj)
             })
             return topicJsonObj;
+        case 'lesson':
+            let lessonObj = {};
+            lessonObj.description = realmObj.description;
+            lessonObj.words = [];
+            lessonObj.time = realmObj.time;
+            lessonObj.timeCompleted = realmObj.timeCompleted;
+            lessonObj.isComplete = realmObj.isComplete
+
+            realmObj.words.forEach(wordRealm => {
+                let wordObj = {};
+                wordObj.text = wordRealm.text;
+                wordObj.isComplete = wordRealm.isComplete;
+                wordObj.path = wordRealm.path;
+
+                lessonObj.words.push(wordObj)
+            })
+            return lessonObj;
     }
 }

@@ -18,3 +18,15 @@ export const wordSchema = {
         path: 'string'
     }
 }
+
+export const lessonSchema = {
+    name: 'Lesson',
+    properties: {
+        description: 'string',
+        // topics: {type: 'list', objectType: 'Topic'},
+        words: {type: 'list', objectType: 'Word'},
+        time: 'string',
+        timeCompleted: 'string',
+        isComplete: 'bool'
+    }
+}

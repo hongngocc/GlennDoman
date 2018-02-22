@@ -40,11 +40,11 @@ export default class TopicDetails extends Component {
     }
 
     loadTopic() {
-        let topics = RealmManager.loadTopicByName(this.props.title);
-        topics.then(data => this.setState({
-            topic: data
-        }))
-        .catch(err => console.log(err))
+        RealmManager.loadTopicByName(this.props.title).then(topic => {
+            this.setState({
+                topic: topic
+            })
+        }).catch(err => {});
     }
 
     getListWord() {
@@ -87,7 +87,7 @@ export default class TopicDetails extends Component {
         this.setState({ visibleModal: false })
     }
 
-    addNewWord() {
+    async addNewWord() {
         if (this.state.newWord.length < 3) {
             ToastAndroid.show('Please input at least 3 characters', ToastAndroid.SHORT);
             return;
@@ -96,8 +96,8 @@ export default class TopicDetails extends Component {
         let newWord = { text: this.state.newWord, isComplete: false, path: '' };
         // let topicRealm = JSON.parse(this.props.topicRealm);
         // let updatedTopicRealm = Object.assign({}, topicRealm, newWords)
-        RealmManager.addNewWord(this.props.title, newWord, true);
-        this.loadTopic()
+        await RealmManager.addNewWord(this.props.title, newWord, true);
+        this.loadTopic();
     }
 
     renderModal() {
@@ -136,8 +136,8 @@ export default class TopicDetails extends Component {
         )
     }
 
-    removeWord(text) {
-        RealmManager.deleleWord(text);
+    async removeWord(text) {
+        await RealmManager.deleleWord(text);
         this.loadTopic()
     }
     

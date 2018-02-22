@@ -41,23 +41,48 @@ export default class AddLesson extends Component {
             listData: [],
             counter: 0
         }
+        this.words = [],
+            this.topics = [],
+            this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     }
 
-    componentWillMount() {
-        RealmManager.getAllTopic().then(topics => this.setState({ listData: topics }))
-            .catch(err => console.log(err))
+    onNavigatorEvent(event) {
+        if (event.type === 'NavBarButtonPress') {
+            switch (event.id) {
+                case 'add_lesson':
+                    RealmManager.createLesson('aihihi', this.words, new Date().getTime().toString());
+                    break;
+            }
+        } else {
+            switch (event.id) {
+                case 'willAppear':
+                    RealmManager.getAllTopic().then(topics => this.setState({ listData: topics }))
+                        .catch(err => console.log(err))
+                    break;
+                case 'didAppear':
+                    break;
+                case 'willDisappear':
+                    break;
+                case 'didDisappear':
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     showModal() {
         this.setState({
             visibleModal: true
         })
+        // this.clearAllPick();
     }
 
     closeModal() {
         this.setState({
             visibleModal: false
         })
+        this.clearAllPick();
     }
 
     async openTimePicker() {
@@ -140,7 +165,7 @@ export default class AddLesson extends Component {
         return _date + ` ${year}`;
     }
 
-    toggleWordPicker(topicIndex, wordIndex) {
+    toggleWordPicker(topicIndex, wordIndex, text, topicTitle) {
         if (this.state.counter <= this.state.selectedNumber) {
             let _listData = this.state.listData;
             let _word = _listData[topicIndex].words[wordIndex];
@@ -157,15 +182,30 @@ export default class AddLesson extends Component {
                 _word.picked = !_word.picked;
             }
             if (_word.picked) {
+                this.words.push(_word.text)
                 this.setState({ counter: this.state.counter + 1 })
             } else {
+                let index = this.words.indexOf(text);
+                if (index >= 0) {
+                    this.words.splice(index, 1);
+                }
                 this.setState({ counter: this.state.counter - 1 })
             }
             _listData[topicIndex].words[wordIndex] = _word;
             this.setState({
-                listData: _listData
+                listData: _listData,
             })
         }
+    }
+
+    clearAllPick() {
+        let _listData = this.state.listData;
+        _listData.forEach(topic => {
+            topic.words.forEach(word => {
+                word.picked = false;
+            })
+        });
+        this.setState({ listData: _listData, counter: 0 })
     }
 
     renderModal() {
@@ -185,13 +225,14 @@ export default class AddLesson extends Component {
                         {
                             this.state.listData.map((e, i) => {
                                 let topicIndex = i;
+                                let topicTitle = e.title;
                                 return (
                                     <View style={{ marginBottom: 32 }}>
                                         <Text style={globalStyle.textMain}>{e.title}</Text>
                                         {
                                             e.words.map((e, i) => {
                                                 return (
-                                                    <TouchableOpacity onPress={() => this.toggleWordPicker(topicIndex, i)}>
+                                                    <TouchableOpacity onPress={() => this.toggleWordPicker(topicIndex, i, e.text, topicTitle)}>
                                                         {
                                                             e.isComplete ? null :
                                                                 <View style={{ borderBottomWidth: 1, borderBottomColor: config.color.disableColor, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -211,8 +252,21 @@ export default class AddLesson extends Component {
                         }
                     </ScrollView>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop: 16, alignItems: 'center' }}>
-                        <Text>OK</Text>
-                        <Text>Clear All</Text>
+                        <TouchableOpacity onPress={() => this.clearAllPick()}>
+                            <Text>Clear All</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            this.setState({
+                                visibleModal: false,
+                                words: this.words
+                            })
+                            // console.log(this.state.words)
+                        }}>
+                            <Text>OK</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.closeModal()}>
+                            <Text>Cancel</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
@@ -263,8 +317,13 @@ export default class AddLesson extends Component {
                 </View>
                 <Card style={{ padding: 10 }}>
                     <Text style={[globalStyle.textMain, { textAlign: 'center', marginBottom: 10 }]}>Words</Text>
-                    <FlatList data={this.state.words} numColumns={3}
-                        renderItem={({ item }) => <Text style={{ width: widthItem, textAlign: 'center', padding: 7 }}>{`${item}`}</Text>}>
+                    <FlatList extraData={this.state}
+                    data={this.state.words} numColumns={3}
+                        renderItem={({ item }) =>
+                        <View style={{ width: widthItem, alignItems: 'center', padding: 7}}>
+                            <Text>{`${item}`}</Text>
+                        </View>
+                       }>
                     </FlatList>
                     <TouchableOpacity onPress={() => this.showModal()}
                         style={{ width: 28, height: 28, alignSelf: 'center' }}>
